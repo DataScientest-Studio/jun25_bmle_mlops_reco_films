@@ -1,0 +1,41 @@
+data:
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+  filenames:
+    - "genome-scores.csv"
+    - "genome-tags.csv"
+    - "links.csv"
+    - "movies.csv"
+    - "ratings.csv"
+    - "README.txt"
+    - "tags.csv"
+  bucket_url: "https://mlops-project-db.s3.eu-west-1.amazonaws.com/movie_recommandation/"
+
+make_dataset:
+  input_dir: "data/raw"
+  output_dir: "data/processed"
+
+features:
+    ratings_file: "ratings.csv"
+    movies_file: "movies.csv"
+
+model:
+  model_dir: "models"
+  model_filename: "best_svd_model.pkl"
+  n_neighbors: 20  # Pour KNNBasic si utilisé
+  processed_data_dir: "data/processed"
+  sample_size: 500_000
+  train_sample_size: 1_000_000
+
+predict:
+  processed_data_dir: "data/processed"
+  model_dir: "models"
+  predictions_dir: "predictions"
+  metrics_dir: "metrics"
+  users_id: [1]  # liste d'utilisateurs pour la prédiction
+  top_N: 5
+  predict_sample_size: 2_000_000
+
+mlflow:
+  tracking_uri: "http://mlflow:5000"
+  experiment_name: "movie_recommendation"

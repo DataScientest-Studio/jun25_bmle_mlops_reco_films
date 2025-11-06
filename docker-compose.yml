@@ -1,0 +1,68 @@
+version: "3.9"
+
+services:
+  minio:
+    build: ./docker/minio
+    container_name: minio
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/minio/health/ready || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+
+  mlflow:
+    build: ./docker/mlflow
+    container_name: mlflow
+    environment:
+      AWS_ACCESS_KEY_ID: minioadmin
+      AWS_SECRET_ACCESS_KEY: minioadmin123
+      MLFLOW_S3_ENDPOINT_URL: http://minio:9000
+    ports:
+      - "5000:5000"
+    depends_on:
+      minio:
+        condition: service_healthy
+    volumes:
+      - mlflow_db:/mlflow
+    command: ["/app/init_mlflow.sh"]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://127.0.0.1:5000/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  pipeline:
+    build: ./docker/pipeline
+    container_name: pipeline
+    environment:
+      AWS_ACCESS_KEY_ID: minioadmin
+      AWS_SECRET_ACCESS_KEY: minioadmin123
+      DVC_REMOTE_URL: s3://dvc-storage
+      DVC_S3_ENDPOINT: http://minio:9000
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      MLFLOW_S3_ENDPOINT_URL: http://minio:9000
+      PYTHONPATH: /workspace
+    depends_on:
+      minio:
+        condition: service_healthy
+      mlflow:
+        condition: service_healthy
+    volumes:
+      - ./:/workspace
+      - ./data:/workspace/data 
+    command: bash /workspace/docker/pipeline/init_dvc.sh
+
+volumes:
+  minio_data:
+  mlflow_db:
