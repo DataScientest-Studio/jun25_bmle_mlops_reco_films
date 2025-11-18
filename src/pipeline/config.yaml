@@ -39,3 +39,11 @@ predict:
 mlflow:
   tracking_uri: "http://mlflow:5000"
   experiment_name: "movie_recommendation"
+
+db:
+  dbname: reco_films
+  user: reco_films
+  password: reco_films
+  host: db  # Nom du service dans docker-compose.yml
+  port: 5432
+

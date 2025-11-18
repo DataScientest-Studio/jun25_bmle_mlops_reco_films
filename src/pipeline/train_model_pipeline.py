@@ -2,6 +2,8 @@
 # src/pipeline/models_module_def/train_model_pipeline.py
 # -------------------------------
 import os
+import psycopg2
+from psycopg2 import sql
 from pipeline.config import load_config
 import pandas as pd
 import joblib
@@ -25,6 +27,10 @@ def train_model_mlflow():
     knn_sample_size = config["model"]["n_neighbors"] * 2500
     train_sample_size = 1_000_000
 
+    # Paramètres de filtrage
+    min_ratings_user = 50
+    min_ratings_movie = 100    
+
     # MLflow
     mlflow.set_tracking_uri(config["mlflow"]["tracking_uri"])
     mlflow.set_experiment(config["mlflow"]["experiment_name"])
@@ -35,29 +41,57 @@ def train_model_mlflow():
     ratings_df = pd.read_csv(ratings_path, usecols=['userId','movieId','rating'])
     movies_df = pd.read_csv(movies_path)
 
-    # Filtrage
-    min_ratings_user = 50
-    min_ratings_movie = 100
-    active_users = ratings_df.groupby('userId').size()
-    active_users = active_users[active_users >= min_ratings_user].index
-    ratings_df = ratings_df[ratings_df['userId'].isin(active_users)]
+    # -------------------------------
+    # Charger les données depuis PostgreSQL et filtrer
+    # -------------------------------
+    conn = psycopg2.connect(
+        dbname=config["db"]["dbname"],
+        user=config["db"]["user"],
+        password=config["db"]["password"],
+        host=config["db"]["host"],
+        port=config["db"]["port"]
+    )
 
-    popular_movies = ratings_df.groupby('movieId').size()
-    popular_movies = popular_movies[popular_movies >= min_ratings_movie].index
-    ratings_df = ratings_df[ratings_df['movieId'].isin(popular_movies)]
+    # Requête pour récupérer les ratings filtrés (avec échantillonnage aléatoire)
+    query_ratings = sql.SQL("""
+        WITH
+        active_users AS (
+            SELECT userId
+            FROM ratings
+            GROUP BY userId
+            HAVING COUNT(*) >= {min_ratings_user}
+        ),
+        popular_movies AS (
+            SELECT movieId
+            FROM ratings
+            GROUP BY movieId
+            HAVING COUNT(*) >= {min_ratings_movie}
+        )
+        SELECT r.userId, r.movieId, r.rating
+        FROM ratings r
+        JOIN active_users au ON r.userId = au.userId
+        JOIN popular_movies pm ON r.movieId = pm.movieId
+    """).format(
+        min_ratings_user=sql.Literal(min_ratings_user),
+        min_ratings_movie=sql.Literal(min_ratings_movie)
+    )
 
-    print("Shape après filtrage :", ratings_df.shape)
+    # Charger les données filtrées
+    ratings_df = pd.read_sql(query_ratings, conn)
+    print("Shape après filtrage SQL :", ratings_df.shape)
+
+    # Fermer la connexion
+    conn.close()
+
+    # -------------------------------
+    # Échantillonnage aléatoire (sans random_state pour varier les échantillons)
+    # -------------------------------
     reader = Reader(rating_scale=(0.5, 5))
-
-    # -------------------------------
-    # Datasets pour comparaison
-    # -------------------------------
-    df_sample = ratings_df.sample(n=sample_size, random_state=42)
+    df_sample = ratings_df.sample(n=sample_size)  # Échantillon aléatoire différent à chaque fois
     df_surprise_sample = Dataset.load_from_df(df_sample[['userId','movieId','rating']], reader)
-
-    df_knn_sample = ratings_df.sample(n=knn_sample_size, random_state=42)
+    df_knn_sample = ratings_df.sample(n=knn_sample_size)  # Échantillon aléatoire différent à chaque fois
     df_surprise_knn = Dataset.load_from_df(df_knn_sample[['userId','movieId','rating']], reader)
-
+    
     # -------------------------------
     # MLflow run
     # -------------------------------

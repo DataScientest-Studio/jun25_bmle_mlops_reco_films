@@ -1,37 +1,10 @@
 stages:
-  stage01_check_structure:
-    cmd: python src/pipeline/pipeline_steps/stage01_check_structure.py
-    deps:
-      - src/pipeline/pipeline_steps/stage01_check_structure.py
-      - src/pipeline/check_structure_pipeline.py
-
-  stage02_import_data:
-    cmd: python src/pipeline/pipeline_steps/stage02_import_data.py
-    deps:
-      - src/pipeline/pipeline_steps/stage02_import_data.py
-      - src/pipeline/import_data_pipeline.py
-      - src/pipeline/config.yaml
-    outs:
-      - data/raw
-
-  stage03_make_dataset:
-    cmd: python src/pipeline/pipeline_steps/stage03_make_dataset.py
-    deps:
-      - src/pipeline/pipeline_steps/stage03_make_dataset.py
-      - src/pipeline/make_dataset_pipeline.py
-      - data/raw
-    outs:
-      - data/processed/ratings.csv
-      - data/processed/movies.csv
-
   stage04_train_model:
     cmd: python src/pipeline/pipeline_steps/stage04_train_model.py
     deps:
       - src/pipeline/train_model_pipeline.py
       - src/pipeline/pipeline_steps/stage04_train_model.py
       - src/pipeline/config.yaml
-      - data/processed/ratings.csv
-      - data/processed/movies.csv
     outs:
       - models/best_svd_model.pkl
     metrics:
@@ -44,7 +17,5 @@ stages:
       - src/pipeline/pipeline_steps/stage05_predict_model.py
       - src/pipeline/config.yaml
       - models/best_svd_model.pkl
-      - data/processed/ratings.csv
-      - data/processed/movies.csv
     outs:
       - predictions/top_5_user_1.csv

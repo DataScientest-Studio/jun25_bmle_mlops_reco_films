@@ -1,6 +1,72 @@
 version: "3.9"
 
 services:
+  db:
+    image: postgres:16-alpine
+    container_name: pg_container
+    restart: always
+    environment:
+      POSTGRES_USER: reco_films
+      POSTGRES_PASSWORD: reco_films
+      POSTGRES_DB: reco_films
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./src/data/sql:/scripts/
+    networks:
+      - my_network       
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U reco_films -d reco_films"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  init_db:
+    image: postgres:16-alpine
+    volumes:
+      - ./src/data/sql:/scripts/
+    command: ["/scripts/init_init_db.sh"]
+    environment:
+      POSTGRES_USER: reco_films
+      POSTGRES_PASSWORD: reco_films
+      POSTGRES_DB: reco_films 
+    depends_on:
+      - db
+    networks:
+      - my_network       
+
+  import_data:
+    build: ./docker/import_data
+    volumes:
+      - ./src/data/sql:/scripts/
+      - ./data/ml-20m:/csv/
+    environment:
+      PYTHONUNBUFFERED: 1   
+    depends_on:
+      - db
+      - init_db
+    networks:
+      - my_network       
+  
+  pgadmin:
+    image : dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: roquin.gregory@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: reco_films
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+      - init_db
+      - import_data    
+    networks:
+      - my_network          
+
+      
   minio:
     build: ./docker/minio
     container_name: minio
@@ -19,6 +85,8 @@ services:
       timeout: 5s
       retries: 30
       start_period: 10s
+    networks:
+      - my_network          
 
   mlflow:
     build: ./docker/mlflow
@@ -41,6 +109,8 @@ services:
       timeout: 5s
       retries: 20
       start_period: 30s
+    networks:
+      - my_network          
 
   pipeline:
     build: ./docker/pipeline
@@ -54,15 +124,23 @@ services:
       MLFLOW_S3_ENDPOINT_URL: http://minio:9000
       PYTHONPATH: /workspace
     depends_on:
-      minio:
-        condition: service_healthy
-      mlflow:
-        condition: service_healthy
+      - db
+      - init_db
+      - import_data    
+      - minio
+      - mlflow
     volumes:
       - ./:/workspace
       - ./data:/workspace/data 
     command: bash /workspace/docker/pipeline/init_dvc.sh
+    networks:
+      - my_network        
 
 volumes:
+  pg_data:
   minio_data:
   mlflow_db:
+
+networks:
+  my_network:
+    driver: bridge
