@@ -1,0 +1,21 @@
+stages:
+  stage04_train_model:
+    cmd: python src/pipeline/pipeline_steps/stage04_train_model.py
+    deps:
+      - src/pipeline/train_model_pipeline.py
+      - src/pipeline/pipeline_steps/stage04_train_model.py
+      - src/pipeline/config.yaml
+    outs:
+      - models/best_svd_model.pkl
+    metrics:
+      - metrics/train_metrics.json
+
+  stage05_predict_model:
+    cmd: python src/pipeline/pipeline_steps/stage05_predict_model.py
+    deps:
+      - src/pipeline/predict_model_pipeline.py
+      - src/pipeline/pipeline_steps/stage05_predict_model.py
+      - src/pipeline/config.yaml
+      - models/best_svd_model.pkl
+    outs:
+      - predictions/top_5_user_1.csv
