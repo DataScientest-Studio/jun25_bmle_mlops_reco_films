@@ -1,14 +1,28 @@
-version: "3.9"
-
 services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+    container_name: fastapi
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src/api:/app
+    env_file:
+      - .env
+    depends_on:
+      - db
+    networks:
+      - my_network
+
   db:
     image: postgres:16-alpine
     container_name: pg_container
     restart: always
     environment:
-      POSTGRES_USER: reco_films
-      POSTGRES_PASSWORD: reco_films
-      POSTGRES_DB: reco_films
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
       - "5432:5432"
     volumes:
@@ -29,9 +43,9 @@ services:
       - ./src/data/sql:/scripts/
     command: ["/scripts/init_init_db.sh"]
     environment:
-      POSTGRES_USER: reco_films
-      POSTGRES_PASSWORD: reco_films
-      POSTGRES_DB: reco_films 
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME} 
     depends_on:
       - db
     networks:
@@ -56,7 +70,7 @@ services:
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: roquin.gregory@gmail.com
-      PGADMIN_DEFAULT_PASSWORD: reco_films
+      PGADMIN_DEFAULT_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5050:80"
     depends_on:
