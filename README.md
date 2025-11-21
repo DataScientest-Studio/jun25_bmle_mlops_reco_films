@@ -1,93 +1,123 @@
-Project Name
-==============================
+# Projet MLOps - Recommandation de Films
 
-This project is a starting Pack for MLOps projects based on the subject "movie_recommandation". It's not perfect so feel free to make some modifications on it.
+Systeme de recommandation de films base sur MovieLens avec API FastAPI, MLflow, Docker et monitoring.
 
-Project Organization
-------------
+## Installation
 
-    ├── LICENSE
-    ├── README.md          <- The top-level README for developers using this project.
-    ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
-    │
-    ├── logs               <- Logs from training and predicting
-    │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
-    │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
-    │
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   ├── check_structure.py    
-    │   │   ├── import_raw_data.py 
-    │   │   └── make_dataset.py
-    │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
-    │   ├── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │   │   └── visualize.py
-    │   └── config         <- Describe the parameters used in train_model.py and predict_model.py
+Prerequis: Docker et Docker Compose
 
---------
+```bash
+docker compose down -v
+docker compose build
+docker compose up -d
+```
 
-## Steps to follow 
+L'import des donnees prend environ 25 minutes. Verifier avec:
+```bash
+docker logs jun25_bmle_mlops_reco_films-import_data-1
+```
 
-Convention : All python scripts must be run from the root specifying the relative file path.
+## Services
 
-### 1- Create a virtual environment using Virtualenv.
+- API: http://localhost:8080
+- MLflow: http://localhost:5000
+- Prometheus: http://localhost:9090
+- Grafana: http://localhost:3001 (admin/admin)
+- Streamlit: http://localhost:8501
 
-    `python -m venv my_env`
+## API
 
-###   Activate it 
+Documentation: http://localhost:8080/docs
 
-    `./my_env/Scripts/activate`
+### Endpoints
 
-###   Install the packages from requirements.txt  (You can ignore the warning with "setup.py")
+**Entrainement:**
+- POST /training/ - Declencher l'entrainement
+- GET /training/status - Statut de l'entrainement
 
-    `pip install -r .\requirements.txt`
+**Predictions:**
+- POST /predict/ - Obtenir des recommandations (gère le cold start automatiquement)
 
-### 2- Execute import_raw_data.py to import the 4 datasets (say yes when it asks you to create a new folder)
+**Donnees:**
+- POST /generate-ratings/?batch_size=X - Generer des votes aleatoires
+- GET /get-random-ratings/?n=X - Recuperer des votes aleatoires
+- GET /stats - Statistiques sur les donnees
 
-    `python .\src\data\import_raw_data.py` 
+**Monitoring:**
+- GET /monitoring/drift - Verifier le data drift
+- GET /monitoring/drift/evidently - Rapport Evidently
+- POST /monitoring/drift/baseline - Creer une baseline
+- GET /monitoring/stats - Statistiques des donnees
+- GET /monitoring/recommendations - Statistiques de monitoring
+- GET /metrics - Metriques Prometheus
 
-### 3- Execute make_dataset.py initializing `./data/raw` as input file path and `./data/processed` as output file path.
+## Pipeline DVC
 
-    `python .\src\data\make_dataset.py`
+Le pipeline execute:
+1. Verification de la structure
+2. Import des donnees brutes
+3. Creation du dataset
+4. Entrainement du modele
+5. Predictions
 
-### 4- Execute build_features.py to preprocess the data (this can take a while)
+## Developpement local
 
-    `python .\src\features\build_features.py`
+Pour travailler sur le code sans Docker:
 
-### 5- Execute train_model.py to train the model
+**Linux/Mac:**
+```bash
+chmod +x setup_venv.sh
+./setup_venv.sh
+source venv/bin/activate
+```
 
-    `python .\src\models\train_model.py`
+**Windows:**
+```cmd
+setup_venv.bat
+venv\Scripts\activate
+```
 
-### 5- Finally, execute predict_model.py file to make the predictions (by default you will be printed predictions for the first 5 users of the dataset). 
+## Streamlit
 
-    `python .\src\models\predict_model.py`
+Interface utilisateur pour tester les recommandations.
 
-### Note that we have 10 recommandations per user
+```bash
+pip install -r requirements.txt
+streamlit run src/streamlit_app.py
+```
 
-<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+## Fonctionnalites
+
+**Cold Start:** Gestion automatique des nouveaux utilisateurs avec recommandations basees sur films populaires et genres.
+
+**Data Drift:** Detection automatique des changements dans les donnees avec comparaison a une baseline.
+
+**Monitoring:** Suivi de la qualite des recommandations (diversite, nouveaute, coverage).
+
+**MLflow:** Comparaison automatique des modeles et promotion vers Production si meilleur.
+
+**Entrainement planifie:** Script cron dans Docker pour execution automatique quotidienne.
+
+**Prometheus/Grafana:** Monitoring des metriques API et ML.
+
+**Evidently:** Detection avancée de derive de donnees.
+
+## Tests
+
+```bash
+pytest tests/
+```
+
+## Structure
+
+```
+├── docker/              # Dockerfiles
+├── src/
+│   ├── api/            # API FastAPI
+│   ├── data/           # Import et traitement
+│   ├── models/         # Entrainement et prediction
+│   └── pipeline/       # Pipeline DVC avec MLflow
+├── data/               # Donnees brutes
+├── models/             # Modeles entraines
+└── docker-compose.yml # Configuration services
+```

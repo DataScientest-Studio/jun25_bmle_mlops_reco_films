@@ -6,6 +6,7 @@ import json
 import pandas as pd
 import joblib
 import mlflow
+import psycopg2
 from surprise import Dataset, Reader
 from pipeline.config import load_config
 
@@ -18,7 +19,7 @@ def top_n_user(algo, trainset, movies_df, user_id, N=5):
     try:
         inner_uid = trainset.to_inner_uid(user_id)
     except ValueError:
-        print(f"⚠️ L'utilisateur {user_id} n'existe pas dans l'échantillon.")
+        print(f"L'utilisateur {user_id} n'existe pas dans l'echantillon.")
         return []
 
     # Récupérer les items déjà notés par l'utilisateur
@@ -38,7 +39,7 @@ def top_n_user(algo, trainset, movies_df, user_id, N=5):
     top_n = sorted(preds, key=lambda x: x.est, reverse=True)[:N]
 
     # Récupérer les titres des films
-    movie_index = movies_df.set_index('movieId')
+    movie_index = movies_df.set_index('movie_id')
     return [
         (movie_index.loc[p.iid, 'title'], p.est)
         for p in top_n
@@ -48,11 +49,14 @@ def top_n_user(algo, trainset, movies_df, user_id, N=5):
 
 def predict_model_mlflow(users_id=None, N=5, predict_sample_size=2_000_000):
     """Exécute la prédiction pour un ou plusieurs utilisateurs et logge sur MLflow."""
+    # Configurer les credentials AWS/MinIO pour boto3 (forcer la configuration)
+    os.environ["AWS_ACCESS_KEY_ID"] = os.getenv("AWS_ACCESS_KEY_ID", "minioadmin")
+    os.environ["AWS_SECRET_ACCESS_KEY"] = os.getenv("AWS_SECRET_ACCESS_KEY", "minioadmin123")
+    os.environ["AWS_DEFAULT_REGION"] = os.getenv("AWS_DEFAULT_REGION", "us-east-1")
+    os.environ["MLFLOW_S3_ENDPOINT_URL"] = os.getenv("MLFLOW_S3_ENDPOINT_URL", "http://minio:9000")
 
     # Chemins
     model_path = os.path.join(config["model"]["model_dir"], config["model"]["model_filename"])
-    ratings_path = os.path.join(config["data"]["raw_dir"], config["features"]["ratings_file"])
-    movies_path = os.path.join(config["data"]["raw_dir"], config["features"]["movies_file"])
 
     # Créer les dossiers de sortie si inexistants
     os.makedirs("predictions", exist_ok=True)
@@ -62,10 +66,26 @@ def predict_model_mlflow(users_id=None, N=5, predict_sample_size=2_000_000):
     mlflow.set_tracking_uri(config["mlflow"]["tracking_uri"])
     mlflow.set_experiment(config["mlflow"]["experiment_name"])
 
-    # Charger le modèle et les données
+    # Charger le modèle
     best_svd = joblib.load(model_path)
-    ratings_df = pd.read_csv(ratings_path, usecols=['userId', 'movieId', 'rating'])
-    movies_df = pd.read_csv(movies_path)
+    
+    # Charger les données depuis PostgreSQL
+    conn = psycopg2.connect(
+        dbname=config["db"]["dbname"],
+        user=config["db"]["user"],
+        password=config["db"]["password"],
+        host=config["db"]["host"],
+        port=config["db"]["port"]
+    )
+    
+    # Charger les ratings
+    ratings_df = pd.read_sql("SELECT user_id, movie_id, rating FROM ratings", conn)
+    
+    # Charger les films
+    movies_df = pd.read_sql("SELECT movie_id, title FROM movies", conn)
+    
+    # Fermer la connexion
+    conn.close()
 
     # Échantillonnage des ratings si nécessaire
     if predict_sample_size < len(ratings_df):
@@ -75,7 +95,7 @@ def predict_model_mlflow(users_id=None, N=5, predict_sample_size=2_000_000):
 
     # Préparer le dataset Surprise
     reader = Reader(rating_scale=(0.5, 5))
-    df_surprise = Dataset.load_from_df(ratings_sample[['userId', 'movieId', 'rating']], reader)
+    df_surprise = Dataset.load_from_df(ratings_sample[['user_id', 'movie_id', 'rating']], reader)
     trainset = df_surprise.build_full_trainset()
 
     # Utilisateur par défaut
@@ -113,4 +133,4 @@ def predict_model_mlflow(users_id=None, N=5, predict_sample_size=2_000_000):
         with open(metrics_path, "w") as f:
             json.dump(all_metrics, f, indent=4)
         mlflow.log_artifact(metrics_path)
-        print(f"\n💾 Métriques sauvegardées dans {metrics_path}")
+        print(f"\nMetriques sauvegardees dans {metrics_path}")

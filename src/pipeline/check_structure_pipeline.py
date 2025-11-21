@@ -15,26 +15,26 @@ def check_structure_pipeline(files=None, folders=None):
         for folder_path in folders:
             if not os.path.exists(folder_path):
                 os.makedirs(folder_path)
-                print(f"✅ Folder '{folder_path}' created automatically.")
+                print(f"Folder '{folder_path}' created automatically.")
             else:
-                print(f"ℹ️ Folder '{folder_path}' already exists.")
+                print(f"Folder '{folder_path}' already exists.")
 
     # Gestion des fichiers
     if files:
         for file_path in files:
             if os.path.isfile(file_path):
-                print(f"ℹ️ File '{file_path}' exists. Will be overwritten automatically if needed.")
+                print(f"File '{file_path}' exists. Will be overwritten automatically if needed.")
             else:
                 # Créer le dossier parent si nécessaire
                 os.makedirs(os.path.dirname(file_path), exist_ok=True)
                 # Créer le fichier vide
                 open(file_path, 'a').close()
-                print(f"✅ File '{file_path}' created automatically.")
+                print(f"File '{file_path}' created automatically.")
     
     return True
 
 
-# ⬇️ Bloc d’exécution directe
+# Bloc d'execution directe
 if __name__ == "__main__":
     folders_to_check = [
         "data/logs",

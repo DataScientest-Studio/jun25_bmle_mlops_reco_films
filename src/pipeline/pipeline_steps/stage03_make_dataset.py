@@ -16,10 +16,10 @@ if __name__ == "__main__":
     input_filepath = config["make_dataset"]["input_dir"]
     output_filepath = config["make_dataset"]["output_dir"]
 
-    logger.info(f"📥 Lecture des données depuis : {input_filepath}")
-    logger.info(f"📤 Sauvegarde des données traitées dans : {output_filepath}")
+    logger.info(f"Lecture des donnees depuis : {input_filepath}")
+    logger.info(f"Sauvegarde des donnees traitees dans : {output_filepath}")
 
     # Appel de la fonction principale
     make_dataset_pipeline(input_filepath, output_filepath)
 
-    logger.info("✅ Étape Make Dataset terminée.")
+    logger.info("Etape Make Dataset terminee.")

@@ -10,4 +10,4 @@ if __name__ == "__main__":
     import_raw_data()
 
     logger = logging.getLogger(__name__)
-    logger.info("✅ Raw data downloaded and ready.")
+    logger.info("Raw data downloaded and ready.")

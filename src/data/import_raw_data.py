@@ -39,22 +39,20 @@ def import_raw_data(
     for filename in filenames:
         output_file = os.path.join(raw_data_relative_path, filename)
 
-        # ✅ Si le fichier existe déjà, on ne le télécharge pas
         if os.path.isfile(output_file):
-            print(f"ℹ️ Fichier {output_file} déjà présent. Téléchargement ignoré.")
+            print(f"Fichier {output_file} deja present. Telechargement ignore.")
             continue
 
-        # ✅ Construction propre de l’URL
         object_url = f"{bucket_folder_url.rstrip('/')}/{filename}"
-        print(f"⬇️ Téléchargement de {object_url} -> {output_file}")
+        print(f"Telechargement de {object_url} -> {output_file}")
 
         try:
             response = requests.get(object_url, timeout=30)
             if response.status_code == 200:
                 with open(output_file, "wb") as f:
                     f.write(response.content)
-                print(f"✅ {filename} téléchargé avec succès.")
+                print(f"{filename} telecharge avec succes.")
             else:
-                print(f"❌ Erreur {response.status_code} lors de l'accès à {object_url}")
+                print(f"Erreur {response.status_code} lors de l'acces a {object_url}")
         except requests.RequestException as e:
-            print(f"⚠️ Erreur réseau : {e}")
+            print(f"Erreur reseau : {e}")

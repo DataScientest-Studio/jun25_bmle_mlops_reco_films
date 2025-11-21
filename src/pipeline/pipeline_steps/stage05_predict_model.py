@@ -8,9 +8,9 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format=log_fmt)
     logger = logging.getLogger(__name__)
 
-    logger.info("🎯 Lancement des prédictions du modèle...")
+    logger.info("Lancement des predictions du modele...")
 
     # Appel de la fonction principale pour effectuer les prédictions
     predict_model_mlflow()  # users_id=None → utilisera [1] par défaut
 
-    logger.info("✅ Prédictions terminées.")
+    logger.info("Predictions terminees.")

@@ -1,5 +1,5 @@
 # -------------------------------
-# 1️⃣ Importer les librairies
+# Importer les librairies
 # -------------------------------
 import os
 import pandas as pd
@@ -8,7 +8,7 @@ from surprise.model_selection import cross_validate, GridSearchCV
 import joblib
 
 # -------------------------------
-# 2️⃣ Charger les données et filtrer
+# Charger les donnees et filtrer
 # -------------------------------
 ratings_path = "./data/raw/ratings.csv"
 movies_path = "./data/raw/movies.csv"
@@ -31,7 +31,7 @@ ratings_df = ratings_df[ratings_df['movieId'].isin(popular_movies)]
 print("Shape après filtrage :", ratings_df.shape)
 
 # -------------------------------
-# 3️⃣ Créer Dataset Surprise pour cross-validation rapide
+# Creer Dataset Surprise pour cross-validation rapide
 # -------------------------------
 reader = Reader(rating_scale=(0.5, 5))
 
@@ -51,7 +51,7 @@ df_knn_item_sample = ratings_df.sample(n=knn_item_sample_size, random_state=42)
 df_surprise_knn_item = Dataset.load_from_df(df_knn_item_sample[['userId','movieId','rating']], reader)
 
 # -------------------------------
-# 4️⃣ Cross-validation rapide pour comparer modèles
+# Cross-validation rapide pour comparer modeles
 # -------------------------------
 models = {
     "SVD": (SVD(n_factors=12, random_state=42), df_surprise_sample),
@@ -65,7 +65,7 @@ for name, (model, dataset) in models.items():
     cross_validate(model, dataset, measures=['RMSE','MAE'], cv=3, verbose=True)
 
 # -------------------------------
-# 5️⃣ GridSearchCV rapide pour SVD
+# GridSearchCV rapide pour SVD
 # -------------------------------
 param_grid = {
     'n_factors': [12, 20],
@@ -76,11 +76,11 @@ param_grid = {
 gs = GridSearchCV(SVD, param_grid, measures=['rmse', 'mae'], cv=3)
 gs.fit(df_surprise_sample)
 
-print("\n✅ Meilleurs paramètres SVD :", gs.best_params['rmse'])
+print("\nMeilleurs parametres SVD :", gs.best_params['rmse'])
 print("RMSE :", gs.best_score['rmse'])
 
 # -------------------------------
-# 6️⃣ Entraîner le meilleur SVD sur un sous-échantillon sûr
+# Entrainer le meilleur SVD sur un sous-echantillon
 # -------------------------------
 train_sample_size = min(1_000_000, len(ratings_df))
 df_train_sample = ratings_df.sample(n=train_sample_size, random_state=42)
@@ -90,13 +90,13 @@ trainset = full_df_surprise.build_full_trainset()
 
 best_svd = gs.best_estimator['rmse']
 best_svd.fit(trainset)
-print(f"✅ SVD entraîné sur {train_sample_size} lignes (sous-échantillon sûr)")
+print(f"SVD entraine sur {train_sample_size} lignes")
 
 # -------------------------------
-# 7️⃣ Sauvegarder le modèle entraîné
+# Sauvegarder le modele entraine
 # -------------------------------
 os.makedirs("./models", exist_ok=True)
 joblib.dump(best_svd, "./models/best_svd_model.pkl")
-print("💾 Modèle sauvegardé dans ./models/best_svd_model.pkl")
+print("Modele sauvegarde dans ./models/best_svd_model.pkl")
 
-print("\n✅ Entraînement terminé avec succès !")
+print("\nEntrainement termine avec succes")
