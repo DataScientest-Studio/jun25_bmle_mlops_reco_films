@@ -11,6 +11,9 @@ from api.schemas import PredictionRequest, PredictionResponse, MovieRecommendati
 from pipeline.config import load_config
 from surprise import Dataset, Reader
 from pipeline.predict_model_pipeline import top_n_user
+from api.cold_start import is_new_user, get_cold_start_recommendations
+from api.monitoring import log_recommendation, compute_recommendation_metrics
+from api.prometheus_metrics import recommendations_total
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/predict", tags=["predict"])
@@ -70,25 +73,39 @@ async def get_recommendations(request: PredictionRequest):
     """
     Obtient les recommandations de films pour un utilisateur donné.
     
+    Gère automatiquement le cold start pour les nouveaux utilisateurs.
     Retourne les top N films recommandés pour l'utilisateur spécifié.
     """
     try:
-        # Charger le modèle et les données
-        model, trainset, movies_df = load_model_and_data()
-        
-        # Obtenir les recommandations
-        top_n = top_n_user(
-            algo=model,
-            trainset=trainset,
-            movies_df=movies_df,
-            user_id=request.user_id,
-            N=request.top_n
-        )
+        # Vérifier si l'utilisateur est nouveau (cold start)
+        if is_new_user(request.user_id):
+            logger.info(f"Utilisateur {request.user_id} est nouveau, utilisation de cold start")
+            top_n = get_cold_start_recommendations(request.user_id, N=request.top_n)
+            method = "cold_start"
+        else:
+            # Charger le modèle et les données
+            model, trainset, movies_df = load_model_and_data()
+            
+            # Obtenir les recommandations avec le modèle
+            top_n = top_n_user(
+                algo=model,
+                trainset=trainset,
+                movies_df=movies_df,
+                user_id=request.user_id,
+                N=request.top_n
+            )
+            method = "collaborative_filtering"
+            
+            # Si pas de recommandations (utilisateur dans trainset mais pas de prédictions)
+            if not top_n:
+                logger.warning(f"Pas de recommandations pour utilisateur {request.user_id}, fallback vers cold start")
+                top_n = get_cold_start_recommendations(request.user_id, N=request.top_n)
+                method = "cold_start_fallback"
         
         if not top_n:
             raise HTTPException(
                 status_code=404,
-                detail=f"L'utilisateur {request.user_id} n'existe pas dans le dataset ou n'a pas de recommandations disponibles."
+                detail=f"Impossible de générer des recommandations pour l'utilisateur {request.user_id}."
             )
         
         # Convertir en format de réponse
@@ -98,6 +115,14 @@ async def get_recommendations(request: PredictionRequest):
         ]
         
         top_score = max([score for _, score in top_n], default=None)
+        
+        # Logger la recommandation pour monitoring
+        try:
+            log_recommendation(request.user_id, top_n, method=method)
+            # Incrémenter le compteur Prometheus
+            recommendations_total.inc(len(recommendations))
+        except Exception as e:
+            logger.warning(f"Erreur lors du logging de la recommandation: {e}")
         
         return PredictionResponse(
             user_id=request.user_id,

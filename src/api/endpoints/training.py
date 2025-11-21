@@ -8,6 +8,7 @@ from api.schemas import TrainingRequest, TrainingResponse
 from pipeline.train_model_pipeline import train_model_mlflow
 import mlflow
 from pipeline.config import load_config
+from api.prometheus_metrics import training_runs_total
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/training", tags=["training"])
@@ -41,6 +42,9 @@ def run_training():
         runs = mlflow.search_runs(order_by=["start_time desc"], max_results=1)
         if not runs.empty:
             training_status["last_run_id"] = runs.iloc[0]["run_id"]
+        
+        # Incrémenter le compteur Prometheus
+        training_runs_total.inc()
         
         logger.info("Entrainement termine avec succes")
         training_status["is_training"] = False

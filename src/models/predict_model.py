@@ -17,7 +17,7 @@ def top_n_user(algo, trainset, movies_df, user_id, N=5):
     try:
         inner_uid = trainset.to_inner_uid(user_id)
     except ValueError:
-        print(f"⚠️ L'utilisateur {user_id} n'existe pas dans l'échantillon.")
+        print(f"L'utilisateur {user_id} n'existe pas dans l'echantillon.")
         return []
 
     # Items déjà notés par l'utilisateur

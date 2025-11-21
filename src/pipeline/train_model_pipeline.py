@@ -92,6 +92,26 @@ def train_model_mlflow():
     df_surprise_knn = Dataset.load_from_df(df_knn_sample[['user_id','movie_id','rating']], reader)
     
     # -------------------------------
+    # Récupérer le meilleur modèle précédent pour comparaison
+    # -------------------------------
+    previous_best_rmse = None
+    previous_run_id = None
+    try:
+        # Chercher la meilleure run précédente (RMSE le plus bas)
+        runs = mlflow.search_runs(
+            order_by=["metrics.SVD_best_RMSE ASC"],
+            max_results=1
+        )
+        if not runs.empty and "metrics.SVD_best_RMSE" in runs.columns:
+            previous_best_rmse = runs.iloc[0]["metrics.SVD_best_RMSE"]
+            previous_run_id = runs.iloc[0]["run_id"]
+            print(f"\nMeilleur modele precedent trouve:")
+            print(f"  Run ID: {previous_run_id}")
+            print(f"  RMSE: {previous_best_rmse:.4f}")
+    except Exception as e:
+        print(f"Impossible de recuperer le meilleur modele precedent: {e}")
+
+    # -------------------------------
     # MLflow run
     # -------------------------------
     with mlflow.start_run(run_name="Model_Comparison_and_Training"):
@@ -100,6 +120,9 @@ def train_model_mlflow():
         mlflow.log_param("min_ratings_movie", min_ratings_movie)
         mlflow.log_param("sample_size", sample_size)
         mlflow.log_param("knn_sample_size", knn_sample_size)
+        if previous_run_id:
+            mlflow.log_param("previous_best_run_id", previous_run_id)
+            mlflow.log_metric("previous_best_RMSE", previous_best_rmse)
 
         # Dictionnaire pour stocker toutes les métriques
         all_metrics = {}
@@ -140,6 +163,32 @@ def train_model_mlflow():
         mlflow.log_params(best_params)
         mlflow.log_metric("SVD_best_RMSE", best_rmse)
         all_metrics["SVD_best_RMSE"] = best_rmse
+        
+        # Comparaison avec le modèle précédent
+        improvement = 0  # Par défaut, pas d'amélioration (premier modèle)
+        if previous_best_rmse is not None:
+            improvement = previous_best_rmse - best_rmse
+            improvement_pct = (improvement / previous_best_rmse) * 100
+            print(f"\nComparaison avec le modele precedent:")
+            print(f"  RMSE precedent: {previous_best_rmse:.4f}")
+            print(f"  RMSE actuel: {best_rmse:.4f}")
+            print(f"  Amelioration: {improvement:.4f} ({improvement_pct:.2f}%)")
+            mlflow.log_metric("improvement_vs_previous", improvement)
+            mlflow.log_metric("improvement_pct", improvement_pct)
+            all_metrics["improvement_vs_previous"] = improvement
+            all_metrics["improvement_pct"] = improvement_pct
+            
+            # Marquer comme meilleur modèle si amélioration
+            if improvement > 0:
+                print("  Nouveau meilleur modele !")
+                mlflow.log_param("is_best_model", True)
+            else:
+                print("  Modele precedent reste meilleur")
+                mlflow.log_param("is_best_model", False)
+        else:
+            # Premier modèle = meilleur par défaut
+            improvement = 0
+            mlflow.log_param("is_best_model", True)
 
         # -------------------------------
         # Entraîner sur échantillon plus grand
@@ -160,6 +209,56 @@ def train_model_mlflow():
         mlflow.log_artifact(model_path)
         mlflow.sklearn.log_model(best_svd, artifact_path="best_svd_model")
         print(f"Modele sauvegarde dans {model_path}")
+        
+        # Enregistrer le modèle dans MLflow Registry
+        model_name = "movie_recommendation_svd"
+        try:
+            # Enregistrer le modèle
+            model_uri = f"runs:/{mlflow.active_run().info.run_id}/best_svd_model"
+            model_version = mlflow.register_model(model_uri, model_name)
+            print(f"\nModele enregistre dans MLflow Registry:")
+            print(f"  Nom: {model_name}")
+            print(f"  Version: {model_version.version}")
+            print(f"  Stage: {model_version.current_stage}")
+            
+            # Si c'est le meilleur modèle, promouvoir vers Production
+            is_best = previous_best_rmse is None or improvement > 0
+            if is_best:
+                from mlflow.tracking import MlflowClient
+                client = MlflowClient()
+                client.transition_model_version_stage(
+                    name=model_name,
+                    version=model_version.version,
+                    stage="Production"
+                )
+                print(f"  Modele promu vers Production")
+                
+                # Archiver les anciennes versions en Production
+                try:
+                    existing_versions = client.search_model_versions(f"name='{model_name}'")
+                    for mv in existing_versions:
+                        if mv.current_stage == "Production" and mv.version != model_version.version:
+                            client.transition_model_version_stage(
+                                name=model_name,
+                                version=mv.version,
+                                stage="Archived"
+                            )
+                            print(f"  Version {mv.version} archivee")
+                except Exception as e:
+                    print(f"  Note: Impossible d'archiver les anciennes versions: {e}")
+            else:
+                # Mettre en Staging si pas le meilleur
+                from mlflow.tracking import MlflowClient
+                client = MlflowClient()
+                client.transition_model_version_stage(
+                    name=model_name,
+                    version=model_version.version,
+                    stage="Staging"
+                )
+                print(f"  Modele mis en Staging")
+        except Exception as e:
+            print(f"\nNote: Impossible d'enregistrer le modele dans le registry: {e}")
+            print("  Le modele est toujours sauvegarde localement et dans MLflow")
 
         # Sauvegarder métriques localement pour DVC
         os.makedirs("metrics", exist_ok=True)

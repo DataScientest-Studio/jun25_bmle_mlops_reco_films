@@ -2,10 +2,17 @@
 Application FastAPI principale pour l'API de recommandation de films
 """
 import logging
-from fastapi import FastAPI
+import time
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from api.endpoints import training, predict, data
+from fastapi.responses import Response
+from api.endpoints import training, predict, data, monitoring
 from api.schemas import HealthResponse
+from api.prometheus_metrics import (
+    api_requests_total,
+    api_request_duration_seconds,
+    get_metrics
+)
 
 # Configuration du logging
 logging.basicConfig(
@@ -32,10 +39,34 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Middleware pour les métriques Prometheus
+@app.middleware("http")
+async def prometheus_middleware(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    duration = time.time() - start_time
+    
+    # Enregistrer les métriques
+    endpoint = request.url.path
+    method = request.method
+    status = response.status_code
+    
+    api_requests_total.labels(method=method, endpoint=endpoint, status=status).inc()
+    api_request_duration_seconds.labels(method=method, endpoint=endpoint).observe(duration)
+    
+    return response
+
 # Inclure les routers
 app.include_router(training.router)
 app.include_router(predict.router)
 app.include_router(data.router)
+app.include_router(monitoring.router)
+
+# Endpoint pour les métriques Prometheus
+@app.get("/metrics")
+async def metrics():
+    """Endpoint pour les métriques Prometheus"""
+    return get_metrics()
 
 
 @app.get("/", response_model=HealthResponse)

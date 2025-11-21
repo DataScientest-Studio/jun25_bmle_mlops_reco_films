@@ -50,3 +50,23 @@ class HealthResponse(BaseModel):
     status: str = Field(description="Statut de l'API")
     version: str = Field(description="Version de l'API")
 
+
+class DriftResponse(BaseModel):
+    """Schéma pour la réponse de détection de drift"""
+    drift_detected: bool = Field(description="Indique si un drift a été détecté")
+    drift_details: Dict[str, Any] = Field(description="Détails des changements détectés")
+    current_stats: Dict[str, Any] = Field(description="Statistiques actuelles")
+    baseline_stats: Optional[Dict[str, Any]] = Field(default=None, description="Statistiques baseline")
+    threshold_pct: Optional[float] = Field(default=None, description="Seuil de détection utilisé")
+    message: str = Field(description="Message descriptif")
+
+
+class MonitoringResponse(BaseModel):
+    """Schéma pour la réponse de monitoring des recommandations"""
+    total_recommendations: int = Field(description="Nombre total de recommandations")
+    period_days: int = Field(description="Période considérée en jours")
+    avg_diversity: float = Field(description="Diversité moyenne des recommandations")
+    avg_novelty: float = Field(description="Nouveauté moyenne des recommandations")
+    avg_score: float = Field(description="Score moyen des recommandations")
+    methods_used: Dict[str, int] = Field(description="Méthodes utilisées et leur fréquence")
+

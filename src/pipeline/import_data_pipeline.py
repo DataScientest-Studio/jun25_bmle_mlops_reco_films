@@ -7,24 +7,24 @@ def download_file(bucket_folder_url, filename, raw_data_relative_path, max_retri
     """Télécharge un fichier depuis le bucket S3 avec retries."""
     output_file = os.path.join(raw_data_relative_path, filename)
     if os.path.isfile(output_file):
-        print(f"ℹ️ File {output_file} already exists. Skipping download.")
+        print(f"File {output_file} already exists. Skipping download.")
         return
 
     object_url = f"{bucket_folder_url.rstrip('/')}/{filename}"
 
     for attempt in range(1, max_retries + 1):
         try:
-            print(f"⬇️ Downloading {object_url} -> {output_file} (attempt {attempt})")
+            print(f"Downloading {object_url} -> {output_file} (attempt {attempt})")
             response = requests.get(object_url, timeout=timeout)
             response.raise_for_status()
             with open(output_file, "wb") as f:
                 f.write(response.content)
-            print(f"✅ Successfully downloaded {filename}")
+            print(f"Successfully downloaded {filename}")
             return
         except (requests.RequestException, IOError) as e:
-            print(f"❌ Attempt {attempt} failed for {filename}: {e}")
+            print(f"Attempt {attempt} failed for {filename}: {e}")
             if attempt < max_retries:
-                print("⏳ Retrying in 5 seconds...")
+                print("Retrying in 5 seconds...")
                 time.sleep(5)
             else:
                 raise RuntimeError(f"Failed to download {filename} after {max_retries} attempts")
