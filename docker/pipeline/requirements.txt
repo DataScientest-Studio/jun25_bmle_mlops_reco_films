@@ -3,7 +3,7 @@
 requests==2.31.0
 python-dotenv>=0.5.1
 pyyaml
-
+psycopg2-binary
 # -------------------------------
 # AWS / S3 / MinIO
 boto3>=1.26.0

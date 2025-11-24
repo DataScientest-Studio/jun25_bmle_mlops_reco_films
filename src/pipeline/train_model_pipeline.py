@@ -1,269 +1,172 @@
-# -------------------------------
-# src/pipeline/models_module_def/train_model_pipeline.py
-# -------------------------------
-import os
-import psycopg2
-from psycopg2 import sql
-from pipeline.config import load_config
 import pandas as pd
-import joblib
-import json
 import mlflow
 import mlflow.sklearn
 from surprise import Dataset, Reader, SVD, KNNBasic, NormalPredictor
-from surprise.model_selection import cross_validate, GridSearchCV
+from surprise.model_selection import cross_validate
+import joblib
+import os
+from src.pipeline.data_loader import load_filtered_ratings
+import os
+from src.pipeline.data_loader import load_filtered_ratings
+import logging
 
-# Charger config
-config = load_config()
+logger = logging.getLogger(__name__)
+
 
 def train_model_mlflow():
-    # Configurer les credentials AWS/MinIO pour boto3 (forcer la configuration)
-    os.environ["AWS_ACCESS_KEY_ID"] = os.getenv("AWS_ACCESS_KEY_ID", "minioadmin")
-    os.environ["AWS_SECRET_ACCESS_KEY"] = os.getenv("AWS_SECRET_ACCESS_KEY", "minioadmin123")
-    os.environ["AWS_DEFAULT_REGION"] = os.getenv("AWS_DEFAULT_REGION", "us-east-1")
-    os.environ["MLFLOW_S3_ENDPOINT_URL"] = os.getenv("MLFLOW_S3_ENDPOINT_URL", "http://minio:9000")
+    # Import du training_status pour mettre à jour la progression
+    from api.endpoints.training import training_status
     
-    # Chemins et paramètres
-    model_dir = config["model"]["model_dir"]
-    os.makedirs(model_dir, exist_ok=True)
-    
-    sample_size = 500_000
-    knn_sample_size = config["model"]["n_neighbors"] * 2500
-    train_sample_size = 1_000_000
+    # Configuration MLflow
+    mlflow.set_tracking_uri(os.getenv('MLFLOW_TRACKING_URI'))
+    mlflow.set_experiment("Film_Recommendation_Experiment")
 
-    # Paramètres de filtrage
+    # Paramètres
+    sample_size = 100000 
+    knn_sample_size = 20000
+    train_sample_size = 200000
     min_ratings_user = 50
-    min_ratings_movie = 100    
-
-    # MLflow
-    mlflow.set_tracking_uri(config["mlflow"]["tracking_uri"])
-    mlflow.set_experiment(config["mlflow"]["experiment_name"])
-
-    # -------------------------------
-    # Charger les données depuis PostgreSQL et filtrer
-    # -------------------------------
-    conn = psycopg2.connect(
-        dbname=config["db"]["dbname"],
-        user=config["db"]["user"],
-        password=config["db"]["password"],
-        host=config["db"]["host"],
-        port=config["db"]["port"]
-    )
-
-    # Requête pour récupérer les ratings filtrés (avec échantillonnage aléatoire)
-    query_ratings = sql.SQL("""
-        WITH
-        active_users AS (
-            SELECT user_id
-            FROM ratings
-            GROUP BY user_id
-            HAVING COUNT(*) >= {min_ratings_user}
-        ),
-        popular_movies AS (
-            SELECT movie_id
-            FROM ratings
-            GROUP BY movie_id
-            HAVING COUNT(*) >= {min_ratings_movie}
-        )
-        SELECT r.user_id, r.movie_id, r.rating
-        FROM ratings r
-        JOIN active_users au ON r.user_id = au.user_id
-        JOIN popular_movies pm ON r.movie_id = pm.movie_id
-    """).format(
-        min_ratings_user=sql.Literal(min_ratings_user),
-        min_ratings_movie=sql.Literal(min_ratings_movie)
-    )
-
-    # Charger les données filtrées
-    # Conversion de l'objet sql.Composed en string pour pandas
-    ratings_df = pd.read_sql(query_ratings.as_string(conn), conn)
+    min_ratings_movie = 100
+    
+    # Charger les données via le module dédié
+    training_status["progress"] = "Chargement des données..."
+    ratings_df = load_filtered_ratings(min_ratings_user=min_ratings_user, min_ratings_movie=min_ratings_movie)
     print("Shape après filtrage SQL :", ratings_df.shape)
 
-    # Fermer la connexion
-    conn.close()
+    # -------------------------------
+    # Ajuster les tailles d'échantillon en fonction des données disponibles
+    # -------------------------------
+    available_rows = len(ratings_df)
+    actual_sample_size = min(sample_size, available_rows)
+    actual_knn_sample_size = min(knn_sample_size, available_rows)
+    actual_train_sample_size = min(train_sample_size, available_rows)
+    
+    print(f"Tailles d'échantillon ajustées:")
+    print(f"  Sample size: {actual_sample_size} (demandé: {sample_size})")
+    print(f"  KNN sample size: {actual_knn_sample_size} (demandé: {knn_sample_size})")
+    print(f"  Train sample size: {actual_train_sample_size} (demandé: {train_sample_size})")
 
     # -------------------------------
-    # Échantillonnage aléatoire (sans random_state pour varier les échantillons)
+    # Échantillonnage aléatoire
     # -------------------------------
     reader = Reader(rating_scale=(0.5, 5))
-    df_sample = ratings_df.sample(n=sample_size)  # Échantillon aléatoire différent à chaque fois
-    df_surprise_sample = Dataset.load_from_df(df_sample[['user_id','movie_id','rating']], reader)
-    df_knn_sample = ratings_df.sample(n=knn_sample_size)  # Échantillon aléatoire différent à chaque fois
-    df_surprise_knn = Dataset.load_from_df(df_knn_sample[['user_id','movie_id','rating']], reader)
     
-    # -------------------------------
-    # Récupérer le meilleur modèle précédent pour comparaison
-    # -------------------------------
-    previous_best_rmse = None
-    previous_run_id = None
-    try:
-        # Chercher la meilleure run précédente (RMSE le plus bas)
-        runs = mlflow.search_runs(
-            order_by=["metrics.SVD_best_RMSE ASC"],
-            max_results=1
-        )
-        if not runs.empty and "metrics.SVD_best_RMSE" in runs.columns:
-            previous_best_rmse = runs.iloc[0]["metrics.SVD_best_RMSE"]
-            previous_run_id = runs.iloc[0]["run_id"]
-            print(f"\nMeilleur modele precedent trouve:")
-            print(f"  Run ID: {previous_run_id}")
-            print(f"  RMSE: {previous_best_rmse:.4f}")
-    except Exception as e:
-        print(f"Impossible de recuperer le meilleur modele precedent: {e}")
+    # Échantillon pour l'évaluation rapide
+    df_sample = ratings_df.sample(n=actual_sample_size)
+    df_surprise_sample = Dataset.load_from_df(df_sample[['user_id','movie_id','rating']], reader)
+    
+    # Échantillon pour KNN (plus petit car coûteux en mémoire)
+    df_knn_sample = ratings_df.sample(n=actual_knn_sample_size)
+    df_surprise_knn = Dataset.load_from_df(df_knn_sample[['user_id','movie_id','rating']], reader)
 
-    # -------------------------------
-    # MLflow run
-    # -------------------------------
-    with mlflow.start_run(run_name="Model_Comparison_and_Training"):
-
+    with mlflow.start_run() as run:
+        # Capturer le run_id pour le retourner
+        run_id = run.info.run_id
+        logger.info(f"MLflow run démarrée: {run_id}")
+        
+        # Log des paramètres
+        mlflow.log_param("original_sample_size", sample_size)
+        mlflow.log_param("original_knn_sample_size", knn_sample_size)
+        mlflow.log_param("original_train_sample_size", train_sample_size)
+        mlflow.log_param("actual_sample_size", actual_sample_size)
+        mlflow.log_param("actual_knn_sample_size", actual_knn_sample_size)
+        mlflow.log_param("actual_train_sample_size", actual_train_sample_size)
+        mlflow.log_param("available_rows_after_filter", available_rows)
         mlflow.log_param("min_ratings_user", min_ratings_user)
         mlflow.log_param("min_ratings_movie", min_ratings_movie)
-        mlflow.log_param("sample_size", sample_size)
-        mlflow.log_param("knn_sample_size", knn_sample_size)
-        if previous_run_id:
-            mlflow.log_param("previous_best_run_id", previous_run_id)
-            mlflow.log_metric("previous_best_RMSE", previous_best_rmse)
 
-        # Dictionnaire pour stocker toutes les métriques
-        all_metrics = {}
+        # 1. SVD
+        training_status["progress"] = "Entraînement SVD..."
+        print("Entraînement SVD...")
+        model_svd = SVD()
+        cv_svd = cross_validate(model_svd, df_surprise_sample, measures=['RMSE', 'MAE'], cv=3, verbose=True)
+        mean_rmse_svd = cv_svd['test_rmse'].mean()
+        mlflow.log_metric("svd_rmse", mean_rmse_svd)
+        print(f"SVD RMSE: {mean_rmse_svd}")
 
-        # Évaluer modèles
-        models = {
-            "SVD": SVD(n_factors=12, random_state=42),
-            "KNNBasic": KNNBasic(k=config["model"]["n_neighbors"], sim_options={'name': 'cosine', 'user_based': False}),
-            "RandomBaseline": NormalPredictor()
-        }
+        # 2. KNNBasic
+        training_status["progress"] = "Entraînement KNNBasic..."
+        print("Entraînement KNNBasic...")
+        model_knn = KNNBasic()
+        cv_knn = cross_validate(model_knn, df_surprise_knn, measures=['RMSE', 'MAE'], cv=3, verbose=True)
+        mean_rmse_knn = cv_knn['test_rmse'].mean()
+        mlflow.log_metric("knn_rmse", mean_rmse_knn)
+        print(f"KNN RMSE: {mean_rmse_knn}")
 
-        for name, model in models.items():
-            print(f"\nEvaluation du modele : {name}")
-            if name == "KNNBasic":
-                results = cross_validate(model, df_surprise_knn, measures=['RMSE','MAE'], cv=3, verbose=False)
-            else:
-                results = cross_validate(model, df_surprise_sample, measures=['RMSE','MAE'], cv=3, verbose=False)
+        # 3. NormalPredictor (Baseline)
+        training_status["progress"] = "Entraînement NormalPredictor..."
+        print("Entraînement NormalPredictor...")
+        model_dummy = NormalPredictor()
+        cv_dummy = cross_validate(model_dummy, df_surprise_sample, measures=['RMSE', 'MAE'], cv=3, verbose=True)
+        mean_rmse_dummy = cv_dummy['test_rmse'].mean()
+        mlflow.log_metric("dummy_rmse", mean_rmse_dummy)
+        print(f"Dummy RMSE: {mean_rmse_dummy}")
 
-            rmse = results['test_rmse'].mean()
-            mae = results['test_mae'].mean()
-            print(f"{name} → RMSE: {rmse:.4f}, MAE: {mae:.4f}")
-            mlflow.log_metric(f"{name}_RMSE", rmse)
-            mlflow.log_metric(f"{name}_MAE", mae)
-
-            # Stocker pour fichier JSON
-            all_metrics[f"{name}_RMSE"] = rmse
-            all_metrics[f"{name}_MAE"] = mae
-
-        # GridSearch SVD
-        param_grid = {'n_factors':[12,20], 'lr_all':[0.002,0.005], 'reg_all':[0.02,0.05]}
-        gs = GridSearchCV(SVD, param_grid, measures=['rmse','mae'], cv=3)
-        gs.fit(df_surprise_sample)
-
-        best_params = gs.best_params['rmse']
-        best_rmse = gs.best_score['rmse']
-        print("\nMeilleurs parametres SVD :", best_params)
-        print("RMSE :", best_rmse)
-        mlflow.log_params(best_params)
-        mlflow.log_metric("SVD_best_RMSE", best_rmse)
-        all_metrics["SVD_best_RMSE"] = best_rmse
+        # Comparaison et sauvegarde du meilleur modèle
+        best_rmse = min(mean_rmse_svd, mean_rmse_knn, mean_rmse_dummy)
         
-        # Comparaison avec le modèle précédent
-        improvement = 0  # Par défaut, pas d'amélioration (premier modèle)
-        if previous_best_rmse is not None:
-            improvement = previous_best_rmse - best_rmse
-            improvement_pct = (improvement / previous_best_rmse) * 100
-            print(f"\nComparaison avec le modele precedent:")
-            print(f"  RMSE precedent: {previous_best_rmse:.4f}")
-            print(f"  RMSE actuel: {best_rmse:.4f}")
-            print(f"  Amelioration: {improvement:.4f} ({improvement_pct:.2f}%)")
-            mlflow.log_metric("improvement_vs_previous", improvement)
-            mlflow.log_metric("improvement_pct", improvement_pct)
-            all_metrics["improvement_vs_previous"] = improvement
-            all_metrics["improvement_pct"] = improvement_pct
-            
-            # Marquer comme meilleur modèle si amélioration
-            if improvement > 0:
-                print("  Nouveau meilleur modele !")
-                mlflow.log_param("is_best_model", True)
-            else:
-                print("  Modele precedent reste meilleur")
-                mlflow.log_param("is_best_model", False)
+        # Récupérer le meilleur RMSE précédent
+        client = mlflow.tracking.MlflowClient()
+        experiment_id = client.get_experiment_by_name("Film_Recommendation_Experiment").experiment_id
+        runs = client.search_runs(experiment_id, order_by=["metrics.best_rmse ASC"], max_results=1)
+        
+        previous_best_rmse = None
+        if runs:
+            previous_best_rmse = runs[0].data.metrics.get("best_rmse")
+
+        print(f"Meilleur RMSE actuel : {best_rmse}")
+        print(f"Meilleur RMSE précédent : {previous_best_rmse}")
+
+        is_best_model = False
+        if previous_best_rmse is None or best_rmse < previous_best_rmse:
+            is_best_model = True
+            print("Nouveau meilleur modèle trouvé !")
         else:
-            # Premier modèle = meilleur par défaut
-            improvement = 0
-            mlflow.log_param("is_best_model", True)
+            print("Le modèle actuel n'est pas meilleur que le précédent.")
 
-        # -------------------------------
-        # Entraîner sur échantillon plus grand
-        # -------------------------------
-        df_train_sample = ratings_df.sample(n=train_sample_size, random_state=42)
-        full_df_surprise = Dataset.load_from_df(df_train_sample[['user_id','movie_id','rating']], reader)
-        trainset = full_df_surprise.build_full_trainset()
+        mlflow.log_metric("best_rmse", best_rmse)
+        mlflow.log_param("is_best_model", is_best_model)
 
-        best_svd = gs.best_estimator['rmse']
-        best_svd.fit(trainset)
-        print(f"SVD entraine sur {train_sample_size} lignes")
-
-        # -------------------------------
-        # Sauvegarde modèle et métriques
-        # -------------------------------
-        model_path = os.path.join(model_dir, config["model"]["model_filename"])
-        joblib.dump(best_svd, model_path)
-        mlflow.log_artifact(model_path)
-        mlflow.sklearn.log_model(best_svd, artifact_path="best_svd_model")
-        print(f"Modele sauvegarde dans {model_path}")
-        
-        # Enregistrer le modèle dans MLflow Registry
-        model_name = "movie_recommendation_svd"
-        try:
-            # Enregistrer le modèle
-            model_uri = f"runs:/{mlflow.active_run().info.run_id}/best_svd_model"
-            model_version = mlflow.register_model(model_uri, model_name)
-            print(f"\nModele enregistre dans MLflow Registry:")
-            print(f"  Nom: {model_name}")
-            print(f"  Version: {model_version.version}")
-            print(f"  Stage: {model_version.current_stage}")
+        # Réentraîner le meilleur modèle sur un plus grand jeu de données (si possible)
+        if is_best_model:
+            print("Réentraînement du meilleur modèle sur le jeu d'entraînement...")
             
-            # Si c'est le meilleur modèle, promouvoir vers Production
-            is_best = previous_best_rmse is None or improvement > 0
-            if is_best:
-                from mlflow.tracking import MlflowClient
-                client = MlflowClient()
-                client.transition_model_version_stage(
-                    name=model_name,
-                    version=model_version.version,
-                    stage="Production"
-                )
-                print(f"  Modele promu vers Production")
-                
-                # Archiver les anciennes versions en Production
-                try:
-                    existing_versions = client.search_model_versions(f"name='{model_name}'")
-                    for mv in existing_versions:
-                        if mv.current_stage == "Production" and mv.version != model_version.version:
-                            client.transition_model_version_stage(
-                                name=model_name,
-                                version=mv.version,
-                                stage="Archived"
-                            )
-                            print(f"  Version {mv.version} archivee")
-                except Exception as e:
-                    print(f"  Note: Impossible d'archiver les anciennes versions: {e}")
+            # Sélection du meilleur algorithme
+            if best_rmse == mean_rmse_svd:
+                best_algo = SVD()
+                best_algo_name = "SVD"
+            elif best_rmse == mean_rmse_knn:
+                best_algo = KNNBasic()
+                best_algo_name = "KNNBasic"
             else:
-                # Mettre en Staging si pas le meilleur
-                from mlflow.tracking import MlflowClient
-                client = MlflowClient()
-                client.transition_model_version_stage(
-                    name=model_name,
-                    version=model_version.version,
-                    stage="Staging"
-                )
-                print(f"  Modele mis en Staging")
-        except Exception as e:
-            print(f"\nNote: Impossible d'enregistrer le modele dans le registry: {e}")
-            print("  Le modele est toujours sauvegarde localement et dans MLflow")
+                best_algo = NormalPredictor()
+                best_algo_name = "NormalPredictor"
+            
+            mlflow.log_param("best_algorithm", best_algo_name)
+            
+            # Entraînement final
+            train_df = ratings_df.sample(n=actual_train_sample_size)
+            train_set = Dataset.load_from_df(train_df[['user_id','movie_id','rating']], reader).build_full_trainset()
+            best_algo.fit(train_set)
+            
+            # Sauvegarde
+            os.makedirs("models", exist_ok=True)
+            model_path = "models/best_svd_model.pkl"
+            joblib.dump(best_algo, model_path)
+            mlflow.log_artifact(model_path)
+            
+            # Enregistrement dans le Model Registry
+            mlflow.sklearn.log_model(
+                sk_model=best_algo,
+                artifact_path="model",
+                registered_model_name="Best_Film_Recommender"
+            )
+            print(f"Modèle {best_algo_name} sauvegardé et enregistré.")
+        else:
+            print("Pas de sauvegarde de modèle car pas d'amélioration.")
+        
+        # Retourner le run_id
+        return run_id
 
-        # Sauvegarder métriques localement pour DVC
-        os.makedirs("metrics", exist_ok=True)
-        metrics_path = os.path.join("metrics", "train_metrics.json")
-        with open(metrics_path, "w") as f:
-            json.dump(all_metrics, f, indent=4)
-        mlflow.log_artifact(metrics_path)
-        print(f"Metriques sauvegardees dans {metrics_path}")
+if __name__ == "__main__":
+    train_model_mlflow()

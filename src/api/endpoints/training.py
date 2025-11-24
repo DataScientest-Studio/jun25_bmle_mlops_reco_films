@@ -17,7 +17,8 @@ router = APIRouter(prefix="/training", tags=["training"])
 training_status = {
     "is_training": False,
     "last_run_id": None,
-    "last_error": None
+    "last_error": None,
+    "progress": ""  # Message de progression en temps réel
 }
 
 
@@ -30,18 +31,30 @@ def run_training():
         
         logger.info("Demarrage de l'entrainement du modele...")
         
-        # Exécuter l'entraînement
-        train_model_mlflow()
+        # Exécuter l'entraînement et récupérer le run_id directement
+        run_id = train_model_mlflow()
         
-        # Récupérer l'ID de la dernière run MLflow
-        config = load_config()
-        mlflow.set_tracking_uri(config["mlflow"]["tracking_uri"])
-        mlflow.set_experiment(config["mlflow"]["experiment_name"])
-        
-        # Récupérer la dernière run
-        runs = mlflow.search_runs(order_by=["start_time desc"], max_results=1)
-        if not runs.empty:
-            training_status["last_run_id"] = runs.iloc[0]["run_id"]
+        if run_id:
+            training_status["last_run_id"] = run_id
+            logger.info(f"Run ID récupéré depuis train_model_mlflow: {run_id}")
+        else:
+            logger.error("train_model_mlflow n'a pas retourné de run_id")
+            # Fallback: essayer de chercher quand même
+            config = load_config()
+            mlflow.set_tracking_uri(config["mlflow"]["tracking_uri"])
+            mlflow.set_experiment(config["mlflow"]["experiment_name"])
+            
+            import time
+            max_retries = 3
+            for attempt in range(max_retries):
+                runs = mlflow.search_runs(order_by=["start_time desc"], max_results=1)
+                if not runs.empty:
+                    training_status["last_run_id"] = runs.iloc[0]["run_id"]
+                    logger.info(f"Run ID récupéré via search (tentative {attempt + 1}): {training_status['last_run_id']}")
+                    break
+                else:
+                    logger.warning(f"Tentative {attempt + 1}/{max_retries}: Aucune run trouvée")
+                    time.sleep(1)
         
         # Incrémenter le compteur Prometheus
         training_runs_total.inc()
@@ -104,7 +117,7 @@ async def get_training_status():
     if training_status["is_training"]:
         return TrainingResponse(
             status="training",
-            message="L'entraînement est en cours..."
+            message=training_status.get("progress", "L'entraînement est en cours...")
         )
     elif training_status["last_error"]:
         return TrainingResponse(

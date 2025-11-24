@@ -134,3 +134,6 @@ def predict_model_mlflow(users_id=None, N=5, predict_sample_size=2_000_000):
             json.dump(all_metrics, f, indent=4)
         mlflow.log_artifact(metrics_path)
         print(f"\nMetriques sauvegardees dans {metrics_path}")
+
+if __name__ == "__main__":
+    predict_model_mlflow()

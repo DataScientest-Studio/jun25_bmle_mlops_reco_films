@@ -3,7 +3,7 @@
 set -e
 host="$1"
 # Pas de shift ici, car on n'a pas besoin des arguments suivants
-# On attend juste que la base soit prête
+# On attend juste que la base soit prÃªte
 
 until nc -z "$host" 5432; do
   echo "Waiting for PostgreSQL at $host..."
@@ -11,4 +11,4 @@ until nc -z "$host" 5432; do
 done
 
 echo "PostgreSQL is up!"
-# Ne pas utiliser exec ici, car on n'a pas de commande à exécuter après
+# Ne pas utiliser exec ici, car on n'a pas de commande Ã  exÃ©cuter aprÃ¨s

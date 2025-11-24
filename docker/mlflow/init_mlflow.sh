@@ -1,30 +1,30 @@
 #!/bin/sh
 set -e
 
-echo "🚀 Initialisation MLflow avec MinIO..."
+echo "ðŸš€ Initialisation MLflow avec MinIO..."
 
-# Créer le dossier du backend store si nécessaire
+# CrÃ©er le dossier du backend store si nÃ©cessaire
 mkdir -p /mlflow
-echo "✅ Dossier /mlflow prêt pour le backend store"
+echo "âœ… Dossier /mlflow prÃªt pour le backend store"
 
-# Attendre que MinIO soit prêt via mc
-echo "⏳ Attente de MinIO..."
+# Attendre que MinIO soit prÃªt via mc
+echo "â³ Attente de MinIO..."
 until mc alias set local "${MLFLOW_S3_ENDPOINT_URL:-http://minio:9000}" "${AWS_ACCESS_KEY_ID}" "${AWS_SECRET_ACCESS_KEY}" --api S3v4 >/dev/null 2>&1; do
-  echo "MinIO pas encore prêt, attente 2s..."
+  echo "MinIO pas encore prÃªt, attente 2s..."
   sleep 2
 done
-echo "✅ MinIO prêt"
+echo "âœ… MinIO prÃªt"
 
-# Créer bucket si nécessaire
+# CrÃ©er bucket si nÃ©cessaire
 if ! mc ls local/mlflow-artifacts >/dev/null 2>&1; then
-  echo "🪣 Création du bucket mlflow-artifacts..."
+  echo "ðŸª£ CrÃ©ation du bucket mlflow-artifacts..."
   mc mb local/mlflow-artifacts
 else
-  echo "✅ Bucket mlflow-artifacts existe déjà"
+  echo "âœ… Bucket mlflow-artifacts existe dÃ©jÃ "
 fi
 
-echo "✅ Initialisation MLflow terminée."
-echo "🚀 Démarrage du serveur MLflow..."
+echo "âœ… Initialisation MLflow terminÃ©e."
+echo "ðŸš€ DÃ©marrage du serveur MLflow..."
 
 # Lancer MLflow server en avant-plan
 exec mlflow server \

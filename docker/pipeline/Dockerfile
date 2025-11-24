@@ -2,7 +2,7 @@ FROM python:3.11-slim
 
 # Installer dépendances système
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    git wget curl build-essential python3-dev gfortran libopenblas-dev liblapack-dev \
+    git wget curl build-essential python3-dev gfortran libopenblas-dev liblapack-dev libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Installer uv (ultra rapide)

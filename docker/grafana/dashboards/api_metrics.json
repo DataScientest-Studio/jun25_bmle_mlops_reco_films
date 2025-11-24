@@ -1,77 +1,75 @@
 {
-  "dashboard": {
-    "title": "API Metrics Dashboard",
-    "tags": ["api", "metrics"],
-    "timezone": "browser",
-    "panels": [
-      {
-        "id": 1,
-        "title": "Requests per Second",
-        "type": "graph",
-        "targets": [
-          {
-            "expr": "rate(api_requests_total[5m])",
-            "legendFormat": "{{method}} {{endpoint}}"
-          }
-        ],
-        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
-      },
-      {
-        "id": 2,
-        "title": "Request Duration",
-        "type": "graph",
-        "targets": [
-          {
-            "expr": "histogram_quantile(0.95, rate(api_request_duration_seconds_bucket[5m]))",
-            "legendFormat": "p95"
-          },
-          {
-            "expr": "histogram_quantile(0.50, rate(api_request_duration_seconds_bucket[5m]))",
-            "legendFormat": "p50"
-          }
-        ],
-        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
-      },
-      {
-        "id": 3,
-        "title": "Total Recommendations",
-        "type": "stat",
-        "targets": [
-          {
-            "expr": "recommendations_total",
-            "legendFormat": "Recommendations"
-          }
-        ],
-        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 8}
-      },
-      {
-        "id": 4,
-        "title": "Training Runs",
-        "type": "stat",
-        "targets": [
-          {
-            "expr": "training_runs_total",
-            "legendFormat": "Training Runs"
-          }
-        ],
-        "gridPos": {"h": 4, "w": 6, "x": 6, "y": 8}
-      },
-      {
-        "id": 5,
-        "title": "Data Drift Status",
-        "type": "stat",
-        "targets": [
-          {
-            "expr": "data_drift_detected",
-            "legendFormat": "Drift Detected"
-          }
-        ],
-        "gridPos": {"h": 4, "w": 6, "x": 12, "y": 8}
-      }
-    ],
-    "refresh": "10s",
-    "schemaVersion": 27,
-    "version": 1
-  }
+  "title": "API Metrics Dashboard",
+  "tags": ["api", "metrics"],
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Requests per Second",
+      "type": "graph",
+      "targets": [
+        {
+          "expr": "rate(api_requests_total[5m])",
+          "legendFormat": "{{method}} {{endpoint}}"
+        }
+      ],
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+    },
+    {
+      "id": 2,
+      "title": "Request Duration",
+      "type": "graph",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, rate(api_request_duration_seconds_bucket[5m]))",
+          "legendFormat": "p95"
+        },
+        {
+          "expr": "histogram_quantile(0.50, rate(api_request_duration_seconds_bucket[5m]))",
+          "legendFormat": "p50"
+        }
+      ],
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+    },
+    {
+      "id": 3,
+      "title": "Total Recommendations",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "recommendations_total",
+          "legendFormat": "Recommendations"
+        }
+      ],
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 8}
+    },
+    {
+      "id": 4,
+      "title": "Training Runs",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "training_runs_total",
+          "legendFormat": "Training Runs"
+        }
+      ],
+      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 8}
+    },
+    {
+      "id": 5,
+      "title": "Data Drift Status",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "data_drift_detected",
+          "legendFormat": "Drift Detected"
+        }
+      ],
+      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 8}
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 27,
+  "version": 1
 }
 

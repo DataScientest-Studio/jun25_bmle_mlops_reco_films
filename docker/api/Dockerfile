@@ -1,40 +1,49 @@
 FROM python:3.11-slim
 
-WORKDIR /app
-
-# Installer les dépendances système (y compris les outils de build pour scikit-surprise)
-RUN apt-get update && apt-get install -y \
+# ====== 1. Dépendances système ======
+RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     build-essential \
     gcc \
     g++ \
     python3-dev \
     cron \
+    libopenblas-dev \
+    liblapack-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copier les requirements
+# ====== 2. Installer uv (ultra rapide) ======
+RUN pip install uv
+
+# ====== 3. Préparer le répertoire ======
+WORKDIR /app
+
+# ====== 4. Installer les dépendances Python (utilisation du cache Docker) ======
+
+# Copier seulement requirements pour profiter du cache
 COPY docker/api/requirements.txt /app/requirements.txt
 
-# Installer les dépendances Python
-RUN pip install --no-cache-dir -r requirements.txt
+# Installation des deps AVANT de copier le code
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv pip install --system --no-cache -r /app/requirements.txt
 
-# Copier le code source (src sera monté en volume, mais on copie pour le build)
+# ====== 5. Copier ensuite le code source ======
+# (ne casse plus la couche d'installation des requirements)
 COPY src /app/src
 
-# Copier les scripts cron
+# ====== 6. Scripts cron, init et API ======
 COPY docker/api/cron_training.sh /app/docker/api/cron_training.sh
-COPY docker/api/init_cron.sh /app/docker/api/init_cron.sh
-RUN chmod +x /app/docker/api/cron_training.sh /app/docker/api/init_cron.sh
+COPY docker/api/init_cron.sh      /app/docker/api/init_cron.sh
+COPY docker/api/start_api.sh      /app/start_api.sh
 
-# Exposer le port de l'API
-EXPOSE 8000
+RUN chmod +x \
+    /app/docker/api/cron_training.sh \
+    /app/docker/api/init_cron.sh \
+    /app/start_api.sh
 
-# Commande par défaut
-# Note: PYTHONPATH doit être défini pour que les imports fonctionnent
+# ====== 7. Variables d’environnement ======
 ENV PYTHONPATH=/app/src
 
-# Script de démarrage qui lance cron et l'API
-COPY docker/api/start_api.sh /app/start_api.sh
-RUN chmod +x /app/start_api.sh
-CMD ["/app/start_api.sh"]
+EXPOSE 8000
 
+CMD ["/app/start_api.sh"]

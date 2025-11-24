@@ -6,6 +6,7 @@ import os
 import pandas as pd
 import joblib
 import psycopg2
+from functools import lru_cache
 from fastapi import APIRouter, HTTPException
 from api.schemas import PredictionRequest, PredictionResponse, MovieRecommendation
 from pipeline.config import load_config
@@ -19,8 +20,13 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/predict", tags=["predict"])
 
 
+@lru_cache(maxsize=1)
 def load_model_and_data():
-    """Charge le modèle et les données nécessaires pour les prédictions"""
+    """
+    Charge le modèle et les données nécessaires pour les prédictions.
+    Utilise un cache pour éviter de recharger à chaque requête.
+    """
+    logger.info("Chargement du modèle et des données en mémoire...")
     config = load_config()
     
     # Chemins
