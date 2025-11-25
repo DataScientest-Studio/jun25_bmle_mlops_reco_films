@@ -5,7 +5,7 @@
 /app/docker/api/init_cron.sh
 
 # ====== Configuration DVC ======
-echo "🔧 Configuration DVC..."
+echo "Configuration DVC..."
 
 # Initialiser DVC si pas encore fait
 if [ ! -d ".dvc" ]; then
@@ -26,7 +26,7 @@ dvc remote modify myremote endpointurl "${DVC_S3_ENDPOINT}"
 dvc remote modify myremote access_key_id "${AWS_ACCESS_KEY_ID}"
 dvc remote modify myremote secret_access_key "${AWS_SECRET_ACCESS_KEY}"
 
-echo "✅ DVC configuré."
+echo "DVC configuré."
 
 # Lancer l'API
 exec uvicorn api.app:app --host 0.0.0.0 --port 8000

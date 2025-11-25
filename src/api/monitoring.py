@@ -150,6 +150,7 @@ def get_recommendation_statistics(days: int = 7) -> Dict[str, Any]:
     if not os.path.exists(RECOMMENDATIONS_LOG_PATH):
         return {
             "total_recommendations": 0,
+            "period_days": days,
             "avg_diversity": 0.0,
             "avg_novelty": 0.0,
             "avg_score": 0.0,

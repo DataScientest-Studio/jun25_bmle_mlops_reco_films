@@ -1,6 +1,3 @@
-"""
-Endpoint pour obtenir des recommandations de films
-"""
 import logging
 import os
 import pandas as pd
@@ -22,10 +19,6 @@ router = APIRouter(prefix="/predict", tags=["predict"])
 
 @lru_cache(maxsize=1)
 def load_model_and_data():
-    """
-    Charge le modèle et les données nécessaires pour les prédictions.
-    Utilise un cache pour éviter de recharger à chaque requête.
-    """
     logger.info("Chargement du modèle et des données en mémoire...")
     config = load_config()
     

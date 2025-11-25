@@ -1,14 +1,27 @@
-#!/bin/sh
+#!/bin/bash
+set -e
 
-echo "DÃ©marrage de init_db..."
-export PGPASSWORD='reco_films'
+# La base de données reco_films est déjà créée via POSTGRES_DB
+# On s'assure juste que l'utilisateur a les droits
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+    GRANT ALL PRIVILEGES ON DATABASE "$POSTGRES_DB" TO "$POSTGRES_USER";
+EOSQL
 
-echo "Test de connexion Ã  PostgreSQL..."
-until psql -h db -U reco_films -d reco_films -c "SELECT 1" > /dev/null 2>&1; do
-  echo "En attente de la base de donnÃ©es..."
-  sleep 2
-done
+# Création de l'utilisateur et de la base de données pour Airflow
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+    DO \$\$
+    BEGIN
+        IF NOT EXISTS (SELECT FROM pg_user WHERE usename = 'airflow') THEN
+    CREATE USER airflow WITH PASSWORD 'airflow';
+        END IF;
+    END
+    \$\$;
+    
+    SELECT 'CREATE DATABASE airflow'
+    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'airflow')\gexec
+    
+    GRANT ALL PRIVILEGES ON DATABASE airflow TO airflow;
+EOSQL
 
-echo "Connexion Ã  PostgreSQL rÃ©ussie !"
-echo "ExÃ©cution du script SQL..."
-psql -h db -U reco_films -d reco_films -f /scripts/create_table.sql
+# Exécution du script SQL de création de tables pour l'application
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -f /scripts/create_table.sql

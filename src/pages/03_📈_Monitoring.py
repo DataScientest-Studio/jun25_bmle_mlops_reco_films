@@ -3,17 +3,17 @@ import pandas as pd
 import plotly.express as px
 from api_utils import api_request
 
-st.set_page_config(page_title="Monitoring - Recommandation de Films", page_icon="📈", layout="wide")
+st.set_page_config(page_title="Monitoring - Recommandation de Films", layout="wide")
 
-st.title("📈 Monitoring & Observabilité")
+st.title("Monitoring & Observabilité")
 
-tab1, tab2 = st.tabs(["📊 Qualité des Recommandations", "🔍 Data Drift"])
+tab1, tab2 = st.tabs(["Qualité des Recommandations", "Data Drift"])
 
 with tab1:
     st.header("Qualité des Recommandations")
     days = st.slider("Période d'analyse (jours)", 1, 30, 7)
     
-    if st.button("🔄 Rafraîchir les métriques"):
+    if st.button("Rafraîchir les métriques"):
         with st.spinner("Chargement..."):
             data, error = api_request("GET", "/monitoring/recommendations", params={"days": days})
             
@@ -39,7 +39,7 @@ with tab2:
     col1, col2 = st.columns([3, 1])
     with col1:
         threshold = st.slider("Seuil d'alerte (%)", 1, 50, 10)
-        if st.button("🔍 Analyser le Drift", type="primary"):
+        if st.button("Analyser le Drift", type="primary"):
             with st.spinner("Analyse en cours..."):
                 data, error = api_request("GET", "/monitoring/drift", params={"threshold_pct": threshold})
                 
@@ -48,9 +48,9 @@ with tab2:
                 else:
                     drift = data.get("drift_detected", False)
                     if drift:
-                        st.error("⚠️ DRIFT DÉTECTÉ ! Les données ont changé significativement.")
+                        st.error("DRIFT DÉTECTÉ : Les données ont changé significativement.")
                     else:
-                        st.success("✅ Aucun drift significatif détecté.")
+                        st.success("Aucun drift significatif détecté.")
                     
                     details = data.get("drift_details", {})
                     if details:
@@ -67,10 +67,10 @@ with tab2:
 
     with col2:
         st.info("Si les données ont changé légitimement, mettez à jour la baseline.")
-        if st.button("📌 Mettre à jour la Baseline"):
+        if st.button("Mettre à jour la Baseline"):
             with st.spinner("Mise à jour..."):
                 data, error = api_request("POST", "/monitoring/drift/baseline")
                 if error:
                     st.error(error)
                 else:
-                    st.success("✅ Nouvelle baseline enregistrée !")
+                    st.success("Nouvelle baseline enregistrée")

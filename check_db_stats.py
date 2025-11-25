@@ -63,7 +63,7 @@ def check_database_stats():
                     ELSE 5
                 END;
         """)
-        print("\n📈 Distribution des utilisateurs par nombre de notes:")
+        print("\nDistribution des utilisateurs par nombre de notes:")
         for count, category in cursor.fetchall():
             print(f"   {category:20s}: {count:,} utilisateurs")
         
@@ -93,13 +93,13 @@ def check_database_stats():
                     ELSE 5
                 END;
         """)
-        print("\n📈 Distribution des films par nombre de notes:")
+        print("\nDistribution des films par nombre de notes:")
         for count, category in cursor.fetchall():
             print(f"   {category:20s}: {count:,} films")
         
         # 6. Simulation des filtres actuels
         print("\n" + "=" * 70)
-        print("🔍 IMPACT DES FILTRES ACTUELS (min_user=50, min_movie=100)")
+        print("IMPACT DES FILTRES ACTUELS (min_user=50, min_movie=100)")
         print("=" * 70)
         
         cursor.execute("""
@@ -122,7 +122,7 @@ def check_database_stats():
             JOIN popular_movies pm ON r.movie_id = pm.movie_id;
         """)
         filtered_ratings = cursor.fetchone()[0]
-        print(f"\n✅ Ratings après filtrage: {filtered_ratings:,}")
+        print(f"\nRatings après filtrage: {filtered_ratings:,}")
         print(f"📉 Pourcentage conservé: {(filtered_ratings/total_ratings*100):.2f}%")
         
         # 7. Utilisateurs et films après filtrage
@@ -137,7 +137,7 @@ def check_database_stats():
             SELECT COUNT(*) FROM active_users;
         """)
         filtered_users = cursor.fetchone()[0]
-        print(f"✅ Utilisateurs après filtrage (≥50 notes): {filtered_users:,}")
+        print(f"Utilisateurs après filtrage (≥50 notes): {filtered_users:,}")
         
         cursor.execute("""
             WITH
@@ -150,11 +150,11 @@ def check_database_stats():
             SELECT COUNT(*) FROM popular_movies;
         """)
         filtered_movies = cursor.fetchone()[0]
-        print(f"✅ Films après filtrage (≥100 notes): {filtered_movies:,}")
+        print(f"Films après filtrage (≥100 notes): {filtered_movies:,}")
         
         # 8. Suggestions de filtres alternatifs
         print("\n" + "=" * 70)
-        print("💡 SUGGESTIONS DE FILTRES ALTERNATIFS")
+        print("SUGGESTIONS DE FILTRES ALTERNATIFS")
         print("=" * 70)
         
         for min_user, min_movie in [(10, 20), (20, 50), (30, 75)]:
@@ -186,8 +186,8 @@ def check_database_stats():
         conn.close()
         
     except Exception as e:
-        print(f"❌ Erreur lors de la connexion à la base de données: {e}")
-        print("\n💡 Assurez-vous que Docker est lancé et que PostgreSQL est accessible.")
+        print(f"Erreur lors de la connexion à la base de données: {e}")
+        print("\nAssurez-vous que Docker est lancé et que PostgreSQL est accessible.")
 
 if __name__ == "__main__":
     check_database_stats()

@@ -1,6 +1,3 @@
-"""
-Endpoint pour déclencher l'entraînement du modèle
-"""
 import logging
 import traceback
 from fastapi import APIRouter, HTTPException, BackgroundTasks
@@ -13,33 +10,29 @@ from api.prometheus_metrics import training_runs_total
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/training", tags=["training"])
 
-# État global pour suivre l'entraînement en cours
 training_status = {
     "is_training": False,
     "last_run_id": None,
     "last_error": None,
-    "progress": ""  # Message de progression en temps réel
+    "progress": ""
 }
 
 
-def run_training():
-    """Fonction pour exécuter l'entraînement en arrière-plan"""
+def run_training(force=False):
     global training_status
     try:
         training_status["is_training"] = True
         training_status["last_error"] = None
         
-        logger.info("Demarrage de l'entrainement du modele...")
+        logger.info(f"Demarrage de l'entrainement du modele (force={force})...")
         
-        # Exécuter l'entraînement et récupérer le run_id directement
-        run_id = train_model_mlflow()
+        run_id = train_model_mlflow(force=force)
         
         if run_id:
             training_status["last_run_id"] = run_id
             logger.info(f"Run ID récupéré depuis train_model_mlflow: {run_id}")
         else:
             logger.error("train_model_mlflow n'a pas retourné de run_id")
-            # Fallback: essayer de chercher quand même
             config = load_config()
             mlflow.set_tracking_uri(config["mlflow"]["tracking_uri"])
             mlflow.set_experiment(config["mlflow"]["experiment_name"])
@@ -56,7 +49,6 @@ def run_training():
                     logger.warning(f"Tentative {attempt + 1}/{max_retries}: Aucune run trouvée")
                     time.sleep(1)
         
-        # Incrémenter le compteur Prometheus
         training_runs_total.inc()
         
         logger.info("Entrainement termine avec succes")
@@ -75,15 +67,8 @@ async def trigger_training(
     request: TrainingRequest = TrainingRequest(),
     background_tasks: BackgroundTasks = None
 ):
-    """
-    Déclenche l'entraînement du modèle de recommandation.
-    
-    L'entraînement s'exécute en arrière-plan et peut prendre plusieurs minutes.
-    Utilisez GET /training/status pour vérifier le statut.
-    """
     global training_status
     
-    # Vérifier si un entraînement est déjà en cours
     if training_status["is_training"]:
         raise HTTPException(
             status_code=409,
@@ -91,8 +76,7 @@ async def trigger_training(
         )
     
     try:
-        # Ajouter la tâche d'entraînement en arrière-plan
-        background_tasks.add_task(run_training)
+        background_tasks.add_task(run_training, force=request.force)
         
         return TrainingResponse(
             status="started",
@@ -109,9 +93,6 @@ async def trigger_training(
 
 @router.get("/status", response_model=TrainingResponse)
 async def get_training_status():
-    """
-    Récupère le statut actuel de l'entraînement.
-    """
     global training_status
     
     if training_status["is_training"]:
@@ -125,7 +106,6 @@ async def get_training_status():
             message=f"Erreur lors du dernier entraînement: {training_status['last_error']}"
         )
     elif training_status["last_run_id"]:
-        # Récupérer les métriques depuis MLflow
         metrics = None
         try:
             config = load_config()

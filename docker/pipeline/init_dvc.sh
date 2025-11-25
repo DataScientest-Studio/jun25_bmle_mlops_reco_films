@@ -42,5 +42,5 @@ fi
 export PYTHONPATH=$(pwd)
 
 # Garder le conteneur en vie pour exécution manuelle
-echo "✅ DVC configuré. Conteneur prêt pour exécution manuelle."
+echo "DVC configuré. Conteneur prêt pour exécution manuelle."
 tail -f /dev/null
