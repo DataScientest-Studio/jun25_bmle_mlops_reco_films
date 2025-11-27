@@ -29,9 +29,12 @@ services:
     environment:
       POSTGRES_USER: reco_films
       POSTGRES_PASSWORD: reco_films
-      POSTGRES_DB: reco_films 
+      POSTGRES_DB: reco_films
+      PGHOST: db 
+      PGPASSWORD: reco_films 
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - my_network       
 

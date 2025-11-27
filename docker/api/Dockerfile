@@ -7,7 +7,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     g++ \
     python3-dev \
-    cron \
     libopenblas-dev \
     liblapack-dev \
     && rm -rf /var/lib/apt/lists/*
@@ -32,13 +31,9 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 COPY src /app/src
 
 # ====== 6. Scripts cron, init et API ======
-COPY docker/api/cron_training.sh /app/docker/api/cron_training.sh
-COPY docker/api/init_cron.sh      /app/docker/api/init_cron.sh
 COPY docker/api/start_api.sh      /app/start_api.sh
 
 RUN chmod +x \
-    /app/docker/api/cron_training.sh \
-    /app/docker/api/init_cron.sh \
     /app/start_api.sh
 
 # ====== 7. Variables d’environnement ======

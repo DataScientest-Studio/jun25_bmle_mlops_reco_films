@@ -2,7 +2,7 @@
 # Script de dÃ©marrage qui lance cron et l'API
 
 # Initialiser cron
-/app/docker/api/init_cron.sh
+# (Supprimé car géré par Airflow)
 
 # ====== Configuration DVC ======
 echo "Configuration DVC..."
