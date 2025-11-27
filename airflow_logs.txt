@@ -1,0 +1,342 @@
+﻿airflow_webserver  | ....................
+airflow_webserver  | ERROR! Maximum number of retries (20) reached.
+airflow_webserver  | 
+airflow_webserver  | Last check result:
+airflow_webserver  | $ airflow db check
+airflow_webserver  | [[34m2025-11-27T04:05:33.057+0000[0m] {[34mcli_action_loggers.py:[0m137} WARNING[0m - Failed to log action (psycopg2.OperationalError) connection to server at "db" (172.28.0.4), port 5432 failed: FATAL:  password authentication failed for user "airflow"
+airflow_webserver  | 
+airflow_webserver  | (Background on this error at: https://sqlalche.me/e/14/e3q8)[0m
+airflow_webserver  | Traceback (most recent call last):
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3371, in _wrap_pool_connect
+airflow_webserver  |     return fn()
+airflow_webserver  |            ^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 327, in connect
+airflow_webserver  |     return _ConnectionFairy._checkout(self)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 894, in _checkout
+airflow_webserver  |     fairy = _ConnectionRecord.checkout(pool)
+airflow_webserver  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 493, in checkout
+airflow_webserver  |     rec = pool._do_get()
+airflow_webserver  |           ^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 145, in _do_get
+airflow_webserver  |     with util.safe_reraise():
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+airflow_webserver  |     compat.raise_(
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+airflow_webserver  |     raise exception
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 143, in _do_get
+airflow_webserver  |     return self._create_connection()
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 273, in _create_connection
+airflow_webserver  |     return _ConnectionRecord(self)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 388, in __init__
+airflow_webserver  |     self.__connect()
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 690, in __connect
+airflow_webserver  |     with util.safe_reraise():
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+airflow_webserver  |     compat.raise_(
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+airflow_webserver  |     raise exception
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 686, in __connect
+airflow_webserver  |     self.dbapi_connection = connection = pool._invoke_creator(self)
+airflow_webserver  |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 574, in connect
+airflow_webserver  |     return dialect.connect(*cargs, **cparams)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 598, in connect
+airflow_webserver  |     return self.dbapi.connect(*cargs, **cparams)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/psycopg2/__init__.py", line 122, in connect
+airflow_webserver  |     conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  | psycopg2.OperationalError: connection to server at "db" (172.28.0.4), port 5432 failed: FATAL:  password authentication failed for user "airflow"
+airflow_webserver  | 
+airflow_webserver  | 
+airflow_webserver  | The above exception was the direct cause of the following exception:
+airflow_webserver  | 
+airflow_webserver  | Traceback (most recent call last):
+airflow_webserver  |   File "/home/airflow/.local/bin/airflow", line 8, in <module>
+airflow_webserver  |     sys.exit(main())
+airflow_webserver  |              ^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/airflow/__main__.py", line 58, in main
+airflow_webserver  |     args.func(args)
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/airflow/cli/cli_config.py", line 49, in command
+airflow_webserver  |     return func(*args, **kwargs)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/cli.py", line 114, in wrapper
+airflow_webserver  |     return f(*args, **kwargs)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/providers_configuration_loader.py", line 55, in wrapped_function
+airflow_webserver  |     return func(*args, **kwargs)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/airflow/cli/commands/db_command.py", line 242, in check
+airflow_webserver  |     for attempt in Retrying(
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 347, in __iter__
+airflow_webserver  |     do = self.iter(retry_state=retry_state)
+airflow_webserver  |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 325, in iter
+airflow_webserver  |     raise retry_exc.reraise()
+airflow_webserver  |           ^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 158, in reraise
+airflow_webserver  |     raise self.last_attempt.result()
+airflow_webserver  |           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/usr/local/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+airflow_webserver  |     return self.__get_result()
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/usr/local/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+airflow_webserver  |     raise self._exception
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/airflow/cli/commands/db_command.py", line 249, in check
+airflow_webserver  |     db.check()
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 79, in wrapper
+airflow_webserver  |     return func(*args, session=session, **kwargs)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/db.py", line 1757, in check
+airflow_webserver  |     session.execute(text("select 1 as is_alive;"))
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1716, in execute
+airflow_webserver  |     conn = self._connection_for_bind(bind)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1555, in _connection_for_bind
+airflow_webserver  |     return self._transaction._connection_for_bind(
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 750, in _connection_for_bind
+airflow_webserver  |     conn = bind.connect()
+airflow_webserver  |            ^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/future/engine.py", line 412, in connect
+airflow_webserver  |     return super(Engine, self).connect()
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3325, in connect
+airflow_webserver  |     return self._connection_cls(self, close_with_result=close_with_result)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 96, in __init__
+airflow_webserver  |     else engine.raw_connection()
+airflow_webserver  |          ^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3404, in raw_connection
+airflow_webserver  |     return self._wrap_pool_connect(self.pool.connect, _connection)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3374, in _wrap_pool_connect
+airflow_webserver  |     Connection._handle_dbapi_exception_noconnection(
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2208, in _handle_dbapi_exception_noconnection
+airflow_webserver  |     util.raise_(
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+airflow_webserver  |     raise exception
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3371, in _wrap_pool_connect
+airflow_webserver  |     return fn()
+airflow_webserver  |            ^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 327, in connect
+airflow_webserver  |     return _ConnectionFairy._checkout(self)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 894, in _checkout
+airflow_webserver  |     fairy = _ConnectionRecord.checkout(pool)
+airflow_webserver  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 493, in checkout
+airflow_webserver  |     rec = pool._do_get()
+airflow_webserver  |           ^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 145, in _do_get
+airflow_webserver  |     with util.safe_reraise():
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+airflow_webserver  |     compat.raise_(
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+airflow_webserver  |     raise exception
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 143, in _do_get
+airflow_webserver  |     return self._create_connection()
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 273, in _create_connection
+airflow_webserver  |     return _ConnectionRecord(self)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 388, in __init__
+airflow_webserver  |     self.__connect()
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 690, in __connect
+airflow_webserver  |     with util.safe_reraise():
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+airflow_webserver  |     compat.raise_(
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+airflow_webserver  |     raise exception
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 686, in __connect
+airflow_webserver  |     self.dbapi_connection = connection = pool._invoke_creator(self)
+airflow_webserver  |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 574, in connect
+airflow_webserver  |     return dialect.connect(*cargs, **cparams)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 598, in connect
+airflow_webserver  |     return self.dbapi.connect(*cargs, **cparams)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/psycopg2/__init__.py", line 122, in connect
+airflow_webserver  |     conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  | sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "db" (172.28.0.4), port 5432 failed: FATAL:  password authentication failed for user "airflow"
+airflow_webserver  | 
+airflow_webserver  | (Background on this error at: https://sqlalche.me/e/14/e3q8)
+airflow_webserver  | 
+airflow_webserver  | ....................
+airflow_webserver  | ERROR! Maximum number of retries (20) reached.
+airflow_webserver  | 
+airflow_webserver  | Last check result:
+airflow_webserver  | $ airflow db check
+airflow_webserver  | [[34m2025-11-27T04:17:29.600+0000[0m] {[34mcli_action_loggers.py:[0m137} WARNING[0m - Failed to log action (psycopg2.OperationalError) connection to server at "db" (172.28.0.4), port 5432 failed: FATAL:  password authentication failed for user "airflow"
+airflow_webserver  | 
+airflow_webserver  | (Background on this error at: https://sqlalche.me/e/14/e3q8)[0m
+airflow_webserver  | Traceback (most recent call last):
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3371, in _wrap_pool_connect
+airflow_webserver  |     return fn()
+airflow_webserver  |            ^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 327, in connect
+airflow_webserver  |     return _ConnectionFairy._checkout(self)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 894, in _checkout
+airflow_webserver  |     fairy = _ConnectionRecord.checkout(pool)
+airflow_webserver  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 493, in checkout
+airflow_webserver  |     rec = pool._do_get()
+airflow_webserver  |           ^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 145, in _do_get
+airflow_webserver  |     with util.safe_reraise():
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+airflow_webserver  |     compat.raise_(
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+airflow_webserver  |     raise exception
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 143, in _do_get
+airflow_webserver  |     return self._create_connection()
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 273, in _create_connection
+airflow_webserver  |     return _ConnectionRecord(self)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 388, in __init__
+airflow_webserver  |     self.__connect()
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 690, in __connect
+airflow_webserver  |     with util.safe_reraise():
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+airflow_webserver  |     compat.raise_(
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+airflow_webserver  |     raise exception
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 686, in __connect
+airflow_webserver  |     self.dbapi_connection = connection = pool._invoke_creator(self)
+airflow_webserver  |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 574, in connect
+airflow_webserver  |     return dialect.connect(*cargs, **cparams)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 598, in connect
+airflow_webserver  |     return self.dbapi.connect(*cargs, **cparams)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/psycopg2/__init__.py", line 122, in connect
+airflow_webserver  |     conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  | psycopg2.OperationalError: connection to server at "db" (172.28.0.4), port 5432 failed: FATAL:  password authentication failed for user "airflow"
+airflow_webserver  | 
+airflow_webserver  | 
+airflow_webserver  | The above exception was the direct cause of the following exception:
+airflow_webserver  | 
+airflow_webserver  | Traceback (most recent call last):
+airflow_webserver  |   File "/home/airflow/.local/bin/airflow", line 8, in <module>
+airflow_webserver  |     sys.exit(main())
+airflow_webserver  |              ^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/airflow/__main__.py", line 58, in main
+airflow_webserver  |     args.func(args)
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/airflow/cli/cli_config.py", line 49, in command
+airflow_webserver  |     return func(*args, **kwargs)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/cli.py", line 114, in wrapper
+airflow_webserver  |     return f(*args, **kwargs)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/providers_configuration_loader.py", line 55, in wrapped_function
+airflow_webserver  |     return func(*args, **kwargs)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/airflow/cli/commands/db_command.py", line 242, in check
+airflow_webserver  |     for attempt in Retrying(
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 347, in __iter__
+airflow_webserver  |     do = self.iter(retry_state=retry_state)
+airflow_webserver  |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 325, in iter
+airflow_webserver  |     raise retry_exc.reraise()
+airflow_webserver  |           ^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 158, in reraise
+airflow_webserver  |     raise self.last_attempt.result()
+airflow_webserver  |           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/usr/local/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+airflow_webserver  |     return self.__get_result()
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/usr/local/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+airflow_webserver  |     raise self._exception
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/airflow/cli/commands/db_command.py", line 249, in check
+airflow_webserver  |     db.check()
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 79, in wrapper
+airflow_webserver  |     return func(*args, session=session, **kwargs)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/db.py", line 1757, in check
+airflow_webserver  |     session.execute(text("select 1 as is_alive;"))
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1716, in execute
+airflow_webserver  |     conn = self._connection_for_bind(bind)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1555, in _connection_for_bind
+airflow_webserver  |     return self._transaction._connection_for_bind(
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 750, in _connection_for_bind
+airflow_webserver  |     conn = bind.connect()
+airflow_webserver  |            ^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/future/engine.py", line 412, in connect
+airflow_webserver  |     return super(Engine, self).connect()
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3325, in connect
+airflow_webserver  |     return self._connection_cls(self, close_with_result=close_with_result)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 96, in __init__
+airflow_webserver  |     else engine.raw_connection()
+airflow_webserver  |          ^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3404, in raw_connection
+airflow_webserver  |     return self._wrap_pool_connect(self.pool.connect, _connection)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3374, in _wrap_pool_connect
+airflow_webserver  |     Connection._handle_dbapi_exception_noconnection(
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2208, in _handle_dbapi_exception_noconnection
+airflow_webserver  |     util.raise_(
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+airflow_webserver  |     raise exception
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3371, in _wrap_pool_connect
+airflow_webserver  |     return fn()
+airflow_webserver  |            ^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 327, in connect
+airflow_webserver  |     return _ConnectionFairy._checkout(self)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 894, in _checkout
+airflow_webserver  |     fairy = _ConnectionRecord.checkout(pool)
+airflow_webserver  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 493, in checkout
+airflow_webserver  |     rec = pool._do_get()
+airflow_webserver  |           ^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 145, in _do_get
+airflow_webserver  |     with util.safe_reraise():
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+airflow_webserver  |     compat.raise_(
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+airflow_webserver  |     raise exception
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 143, in _do_get
+airflow_webserver  |     return self._create_connection()
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 273, in _create_connection
+airflow_webserver  |     return _ConnectionRecord(self)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 388, in __init__
+airflow_webserver  |     self.__connect()
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 690, in __connect
+airflow_webserver  |     with util.safe_reraise():
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+airflow_webserver  |     compat.raise_(
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+airflow_webserver  |     raise exception
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 686, in __connect
+airflow_webserver  |     self.dbapi_connection = connection = pool._invoke_creator(self)
+airflow_webserver  |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 574, in connect
+airflow_webserver  |     return dialect.connect(*cargs, **cparams)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 598, in connect
+airflow_webserver  |     return self.dbapi.connect(*cargs, **cparams)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  |   File "/home/airflow/.local/lib/python3.12/site-packages/psycopg2/__init__.py", line 122, in connect
+airflow_webserver  |     conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+airflow_webserver  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+airflow_webserver  | sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "db" (172.28.0.4), port 5432 failed: FATAL:  password authentication failed for user "airflow"
+airflow_webserver  | 
+airflow_webserver  | (Background on this error at: https://sqlalche.me/e/14/e3q8)
+airflow_webserver  | 

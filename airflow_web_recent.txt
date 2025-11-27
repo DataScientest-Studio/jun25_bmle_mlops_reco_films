@@ -1,0 +1,100 @@
+﻿airflow_webserver  | /home/airflow/.local/lib/python3.12/site-packages/azure/synapse/artifacts/models/_models_py3.py:64045 SyntaxWarning: invalid escape sequence '\d'
+airflow_webserver  | /home/airflow/.local/lib/python3.12/site-packages/azure/synapse/artifacts/models/_models_py3.py:64480 SyntaxWarning: invalid escape sequence '\d'
+airflow_webserver  | /home/airflow/.local/lib/python3.12/site-packages/azure/synapse/artifacts/models/_models_py3.py:64536 SyntaxWarning: invalid escape sequence '\d'
+airflow_webserver  | [2025-11-27 05:58:20 +0000] [31] [INFO] Listening at: http://0.0.0.0:8080 (31)
+airflow_webserver  | [2025-11-27 05:58:20 +0000] [31] [INFO] Using worker: sync
+airflow_webserver  | [2025-11-27 05:58:20 +0000] [67] [INFO] Booting worker with pid: 67
+airflow_webserver  | [2025-11-27 05:58:20 +0000] [68] [INFO] Booting worker with pid: 68
+airflow_webserver  | [2025-11-27 05:58:20 +0000] [69] [INFO] Booting worker with pid: 69
+airflow_webserver  | [2025-11-27 05:58:20 +0000] [70] [INFO] Booting worker with pid: 70
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:05:58:47 +0000] "GET /health HTTP/1.1" 200 255 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:05:59:14 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:05:59:42 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:00:09 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:00:36 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:01:04 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:01:31 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:01:59 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:02:26 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:02:53 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:03:21 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:03:48 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:04:16 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:04:43 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:05:10 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:05:38 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:06:05 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:06:33 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:07:00 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:07:27 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:07:55 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:08:22 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:08:50 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:09:17 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:09:44 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:10:12 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:10:39 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:11:06 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:11:34 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:12:01 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:12:29 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:12:56 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:13:23 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:13:51 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:14:18 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:14:46 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:15:13 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:15:40 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:16:08 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:16:35 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:17:03 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:17:30 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:17:57 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:18:25 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:18:52 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:19:19 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:19:47 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:20:14 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:20:42 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:21:09 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:21:36 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:22:04 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:22:31 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:22:59 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:23:26 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:23:53 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:24:21 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:24:48 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:25:16 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:25:43 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:26:10 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:26:38 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:27:05 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:27:32 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:28:00 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:28:27 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:28:55 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:29:22 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:29:49 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:30:17 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:30:44 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:31:12 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | 127.0.0.1 - - [27/Nov/2025:06:31:39 +0000] "GET /health HTTP/1.1" 200 283 "-" "curl/7.88.1"
+airflow_webserver  | [2025-11-27 06:31:48 +0000] [67] [INFO] Worker exiting (pid: 67)
+airflow_webserver  | [2025-11-27 06:31:48 +0000] [68] [INFO] Worker exiting (pid: 68)
+airflow_webserver  | [2025-11-27 06:31:48 +0000] [69] [INFO] Worker exiting (pid: 69)
+airflow_webserver  | [2025-11-27 06:31:48 +0000] [70] [INFO] Worker exiting (pid: 70)
+airflow_webserver  | [2025-11-27 06:31:48 +0000] [31] [INFO] Handling signal: term
+airflow_webserver  |   ____________       _____________
+airflow_webserver  |  ____    |__( )_________  __/__  /________      __
+airflow_webserver  | ____  /| |_  /__  ___/_  /_ __  /_  __ \_ | /| / /
+airflow_webserver  | ___  ___ |  / _  /   _  __/ _  / / /_/ /_ |/ |/ /
+airflow_webserver  |  _/_/  |_/_/  /_/    /_/    /_/  \____/____/|__/
+airflow_webserver  | Running the Gunicorn Server with:
+airflow_webserver  | Workers: 4 sync
+airflow_webserver  | Host: 0.0.0.0:8080
+airflow_webserver  | Timeout: 120
+airflow_webserver  | Logfiles: - -
+airflow_webserver  | Access Logformat: 
+airflow_webserver  | =================================================================
+airflow_webserver  | [[34m2025-11-27T06:31:48.230+0000[0m] {[34mwebserver_command.py:[0m430} INFO[0m - Received signal: 15. Closing gunicorn.[0m

@@ -1,0 +1,348 @@
+﻿pg_container  | 
+pg_container  | PostgreSQL Database directory appears to contain a database; Skipping initialization
+pg_container  | 
+pg_container  | 2025-11-27 04:02:40.845 UTC [1] LOG:  starting PostgreSQL 16.11 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+pg_container  | 2025-11-27 04:02:40.845 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+pg_container  | 2025-11-27 04:02:40.845 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+pg_container  | 2025-11-27 04:02:40.854 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+pg_container  | 2025-11-27 04:02:40.873 UTC [29] LOG:  database system was shut down at 2025-11-27 04:02:14 UTC
+pg_container  | 2025-11-27 04:02:40.896 UTC [1] LOG:  database system is ready to accept connections
+pg_container  | 2025-11-27 04:03:02.538 UTC [66] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:03:02.538 UTC [66] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:03:02.585 UTC [67] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:03:02.585 UTC [67] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:03:09.023 UTC [81] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:03:09.023 UTC [81] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:03:09.218 UTC [83] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:03:09.218 UTC [83] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:03:18.375 UTC [91] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:03:18.375 UTC [91] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:03:18.573 UTC [92] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:03:18.573 UTC [92] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:03:27.202 UTC [107] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:03:27.202 UTC [107] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:03:27.431 UTC [108] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:03:27.431 UTC [108] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:03:33.392 UTC [123] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:03:33.392 UTC [123] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:03:33.575 UTC [124] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:03:33.575 UTC [124] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:03:41.514 UTC [133] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:03:41.514 UTC [133] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:03:41.737 UTC [134] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:03:41.737 UTC [134] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:03:50.004 UTC [149] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:03:50.004 UTC [149] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:03:50.188 UTC [150] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:03:50.188 UTC [150] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:03:58.135 UTC [165] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:03:58.135 UTC [165] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:03:58.330 UTC [166] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:03:58.330 UTC [166] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:04:03.704 UTC [175] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:04:03.704 UTC [175] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:04:03.862 UTC [176] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:04:03.862 UTC [176] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:04:11.999 UTC [191] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:04:11.999 UTC [191] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:04:12.159 UTC [192] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:04:12.159 UTC [192] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:04:20.478 UTC [200] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:04:20.478 UTC [200] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:04:20.712 UTC [201] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:04:20.712 UTC [201] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:04:28.183 UTC [216] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:04:28.183 UTC [216] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:04:28.356 UTC [217] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:04:28.356 UTC [217] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:04:37.570 UTC [232] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:04:37.570 UTC [232] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:04:37.813 UTC [233] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:04:37.813 UTC [233] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:04:45.750 UTC [249] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:04:45.750 UTC [249] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:04:45.958 UTC [250] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:04:45.958 UTC [250] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:04:54.129 UTC [258] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:04:54.129 UTC [258] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:04:54.327 UTC [259] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:04:54.327 UTC [259] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:05:00.586 UTC [273] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:05:00.586 UTC [273] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:05:00.743 UTC [274] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:05:00.743 UTC [274] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:05:09.541 UTC [289] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:05:09.541 UTC [289] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:05:09.758 UTC [290] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:05:09.758 UTC [290] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:05:18.560 UTC [306] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:05:18.560 UTC [306] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:05:18.756 UTC [307] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:05:18.756 UTC [307] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:05:25.168 UTC [315] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:05:25.168 UTC [315] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:05:25.350 UTC [316] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:05:25.350 UTC [316] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:05:33.056 UTC [332] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:05:33.056 UTC [332] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:05:33.274 UTC [333] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:05:33.274 UTC [333] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:07:40.252 UTC [27] LOG:  checkpoint starting: time
+pg_container  | 2025-11-27 04:07:40.435 UTC [27] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.010 s, sync=0.004 s, total=0.183 s; sync files=2, longest=0.003 s, average=0.002 s; distance=0 kB, estimate=0 kB; lsn=0/49C8C060, redo lsn=0/49C8C028
+pg_container  | 2025-11-27 04:15:36.386 UTC [1244] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:15:36.386 UTC [1244] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:15:36.245 UTC [1245] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:15:36.245 UTC [1245] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:15:42.371 UTC [1262] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:15:42.371 UTC [1262] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:15:42.521 UTC [1263] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:15:42.521 UTC [1263] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:15:48.801 UTC [1271] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:15:48.801 UTC [1271] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:15:48.933 UTC [1272] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:15:48.933 UTC [1272] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:15:55.233 UTC [1280] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:15:55.233 UTC [1280] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:15:55.378 UTC [1281] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:15:55.378 UTC [1281] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:16:01.666 UTC [1289] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:16:01.666 UTC [1289] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:16:01.803 UTC [1290] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:16:01.803 UTC [1290] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:16:06.243 UTC [1306] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:16:06.243 UTC [1306] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:16:06.381 UTC [1307] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:16:06.381 UTC [1307] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:16:12.977 UTC [1315] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:16:12.977 UTC [1315] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:16:13.101 UTC [1316] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:16:13.101 UTC [1316] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:16:19.663 UTC [1324] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:16:19.663 UTC [1324] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:16:19.798 UTC [1325] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:16:19.798 UTC [1325] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:16:26.088 UTC [1340] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:16:26.088 UTC [1340] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:16:26.217 UTC [1341] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:16:26.217 UTC [1341] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:16:30.601 UTC [1350] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:16:30.601 UTC [1350] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:16:30.757 UTC [1351] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:16:30.757 UTC [1351] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:16:37.180 UTC [1359] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:16:37.180 UTC [1359] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:16:37.316 UTC [1360] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:16:37.316 UTC [1360] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:16:43.569 UTC [1369] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:16:43.569 UTC [1369] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:16:43.698 UTC [1370] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:16:43.698 UTC [1370] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:16:49.998 UTC [1385] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:16:49.998 UTC [1385] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:16:50.141 UTC [1386] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:16:50.141 UTC [1386] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:16:56.293 UTC [1394] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:16:56.293 UTC [1394] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:16:56.415 UTC [1395] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:16:56.415 UTC [1395] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:17:00.457 UTC [1403] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:17:00.457 UTC [1403] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:17:00.584 UTC [1404] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:17:00.584 UTC [1404] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:17:06.743 UTC [1412] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:17:06.743 UTC [1412] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:17:06.866 UTC [1413] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:17:06.866 UTC [1413] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:17:13.171 UTC [1428] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:17:13.171 UTC [1428] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:17:13.299 UTC [1429] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:17:13.299 UTC [1429] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:17:19.399 UTC [1437] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:17:19.399 UTC [1437] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:17:19.519 UTC [1438] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:17:19.519 UTC [1438] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:17:25.613 UTC [1446] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:17:25.613 UTC [1446] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:17:25.733 UTC [1447] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:17:25.733 UTC [1447] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:17:29.600 UTC [1455] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:17:29.600 UTC [1455] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:17:29.721 UTC [1456] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:17:29.721 UTC [1456] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:44:39.368 UTC [3975] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:44:39.368 UTC [3975] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:44:39.515 UTC [3976] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:44:39.515 UTC [3976] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:44:46.392 UTC [3985] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:44:46.392 UTC [3985] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:44:46.546 UTC [3986] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:44:46.546 UTC [3986] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:44:53.345 UTC [4001] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:44:53.345 UTC [4001] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:44:53.482 UTC [4002] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:44:53.482 UTC [4002] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:44:59.998 UTC [4011] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:44:59.998 UTC [4011] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:00.147 UTC [4012] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:00.147 UTC [4012] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:03.838 UTC [4020] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:03.838 UTC [4020] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:03.973 UTC [4021] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:03.973 UTC [4021] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:10.098 UTC [4029] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:10.098 UTC [4029] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:10.231 UTC [4030] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:10.231 UTC [4030] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:16.408 UTC [4045] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:16.408 UTC [4045] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:16.542 UTC [4046] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:16.542 UTC [4046] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:22.825 UTC [4054] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:22.825 UTC [4054] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:22.943 UTC [4055] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:22.943 UTC [4055] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:26.657 UTC [4063] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:26.657 UTC [4063] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:26.784 UTC [4064] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:26.784 UTC [4064] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:33.017 UTC [4072] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:33.017 UTC [4072] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:33.155 UTC [4079] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:33.155 UTC [4079] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:39.215 UTC [4089] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:39.215 UTC [4089] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:39.347 UTC [4090] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:39.347 UTC [4090] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:45.587 UTC [4099] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:45.587 UTC [4099] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:45.716 UTC [4100] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:45.716 UTC [4100] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:51.768 UTC [4108] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:51.768 UTC [4108] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:51.891 UTC [4109] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:51.891 UTC [4109] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:55.345 UTC [4117] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:55.345 UTC [4117] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:45:55.469 UTC [4118] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:45:55.469 UTC [4118] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:46:01.641 UTC [4133] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:46:01.641 UTC [4133] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:46:01.764 UTC [4134] FATAL:  password authentication failed for user "airflow"
+pg_container  | 2025-11-27 04:46:01.764 UTC [4134] DETAIL:  Role "airflow" does not exist.
+pg_container  | 	Connection matched file "/var/lib/postgresql/data/pg_hba.conf" line 128: "host all all all scram-sha-256"
+pg_container  | 2025-11-27 04:46:07.842 UTC [1] LOG:  received fast shutdown request
+pg_container  | 2025-11-27 04:46:07.846 UTC [1] LOG:  aborting any active transactions
+pg_container  | 2025-11-27 04:46:07.853 UTC [1] LOG:  background worker "logical replication launcher" (PID 32) exited with exit code 1
+pg_container  | 2025-11-27 04:46:07.854 UTC [27] LOG:  shutting down
+pg_container  | 2025-11-27 04:46:07.859 UTC [27] LOG:  checkpoint starting: shutdown immediate
+pg_container  | 2025-11-27 04:46:07.887 UTC [27] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.012 s, sync=0.001 s, total=0.033 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=0 kB; lsn=0/49C8C110, redo lsn=0/49C8C110
+pg_container  | 2025-11-27 04:46:07.903 UTC [1] LOG:  database system is shut down
