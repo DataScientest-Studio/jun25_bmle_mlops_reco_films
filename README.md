@@ -1,123 +1,381 @@
-# Projet MLOps - Recommandation de Films
+# Projet MLOps - Recommandation de Films 🎬
 
-Systeme de recommandation de films base sur MovieLens avec API FastAPI, MLflow, Docker et monitoring.
+[![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104-green.svg)](https://fastapi.tiangolo.com/)
+[![Docker](https://img.shields.io/badge/Docker-Compose-blue.svg)](https://www.docker.com/)
+[![MLflow](https://img.shields.io/badge/MLflow-Tracking-orange.svg)](https://mlflow.org/)
 
-## Installation
+Système complet de recommandation de films utilisant les pratiques MLOps modernes, basé sur le **dataset MovieLens 20M** (~20 millions d'évaluations). Pipeline automatisé d'entraînement, déploiement et monitoring de modèles de machine learning.
 
-Prerequis: Docker et Docker Compose
+---
+
+## 🚀 Démarrage Rapide
+
+### Prérequis
+- Docker et Docker Compose
+- 8 Go de RAM minimum
+- 10 Go d'espace disque libre
+
+### Installation
 
 ```bash
+# Cloner le repository
+git clone <repository-url>
+cd jun25_bmle_mlops_reco_films
+
+# Démarrer tous les services
 docker compose down -v
 docker compose build
 docker compose up -d
 ```
 
-L'import des donnees prend environ 25 minutes. Verifier avec:
+### Import des données
+
+L'import des données MovieLens 20M prend environ **25 minutes**. Suivre la progression :
+
 ```bash
-docker logs jun25_bmle_mlops_reco_films-import_data-1
+docker logs -f jun25_bmle_mlops_reco_films-import_data-1
 ```
 
-## Services
+---
 
-- API: http://localhost:8080
-- MLflow: http://localhost:5000
-- Prometheus: http://localhost:9090
-- Grafana: http://localhost:3001 (admin/admin)
-- Streamlit: http://localhost:8501
+## 🌐 Services Disponibles
 
-## API
+| Service | URL | Credentials | Description |
+|---------|-----|-------------|-------------|
+| **Streamlit** | http://localhost:8501 | - | Interface utilisateur principale |
+| **API FastAPI** | http://localhost:8080 | - | API REST |
+| **API Docs** | http://localhost:8080/docs | - | Documentation interactive Swagger |
+| **MLflow** | http://localhost:5000 | - | Tracking des expériences ML |
+| **Airflow** | http://localhost:8081 | admin/admin | Orchestration des pipelines |
+| **Grafana** | http://localhost:3001 | admin/admin | Dashboards de monitoring |
+| **Prometheus** | http://localhost:9090 | - | Métriques système |
+| **MinIO Console** | http://localhost:9001 | minioadmin/minioadmin123 | Stockage S3 |
+| **PgAdmin** | http://localhost:5050 | - | Administration PostgreSQL |
 
-Documentation: http://localhost:8080/docs
+---
 
-### Endpoints
+## 📊 Architecture
 
-**Entrainement:**
-- POST /training/ - Declencher l'entrainement
-- GET /training/status - Statut de l'entrainement
+Le système est composé de plusieurs microservices orchestrés avec Docker Compose :
 
-**Predictions:**
-- POST /predict/ - Obtenir des recommandations (gère le cold start automatiquement)
+### Services Backend
+- **PostgreSQL** (port 5432) : Base de données principale (20M évaluations)
+- **MinIO** (ports 9000, 9001) : Stockage S3-compatible pour artefacts MLflow
+- **MLflow** (port 5000) : Tracking des expériences et registry de modèles
+- **API FastAPI** (port 8080) : API REST pour prédictions et entraînement
 
-**Donnees:**
-- POST /generate-ratings/?batch_size=X - Generer des votes aleatoires
-- GET /get-random-ratings/?n=X - Recuperer des votes aleatoires
-- GET /stats - Statistiques sur les donnees
+### Services Monitoring & Orchestration
+- **Prometheus** (port 9090) : Collecte de métriques
+- **Grafana** (port 3001) : Visualisation des métriques
+- **Airflow** (port 8081) : Orchestration quotidienne (entraînement à 2h)
+- **Streamlit** (port 8501) : Interface utilisateur web
 
-**Monitoring:**
-- GET /monitoring/drift - Verifier le data drift
-- GET /monitoring/drift/evidently - Rapport Evidently
-- POST /monitoring/drift/baseline - Creer une baseline
-- GET /monitoring/stats - Statistiques des donnees
-- GET /monitoring/recommendations - Statistiques de monitoring
-- GET /metrics - Metriques Prometheus
+### Flux de Données
 
-## Pipeline DVC
+```
+1. Données : CSV → PostgreSQL (import_data.py)
+2. Entraînement : PostgreSQL → train_model_pipeline.py → MLflow → MinIO
+3. Modèle : MLflow → models/model.pkl (local)
+4. Prédiction : model.pkl + PostgreSQL → predict_model_pipeline.py → API
+5. Interface : Streamlit → API → Utilisateur
+6. Monitoring : API → Prometheus → Grafana
+7. Orchestration : Airflow → API → Entraînement quotidien
+```
 
-Le pipeline execute:
-1. Verification de la structure
-2. Import des donnees brutes
-3. Creation du dataset
-4. Entrainement du modele
-5. Predictions
+Pour plus de détails, voir [ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
-## Developpement local
+---
 
-Pour travailler sur le code sans Docker:
+## 🔌 API Endpoints
 
-**Linux/Mac:**
+Documentation complète : http://localhost:8080/docs
+
+### Entraînement
+
+```bash
+# Déclencher un entraînement
+curl -X POST http://localhost:8080/training/ \
+  -H "Content-Type: application/json" \
+  -d '{"force": true}'
+
+# Vérifier le statut
+curl http://localhost:8080/training/status
+```
+
+### Prédictions
+
+```bash
+# Obtenir des recommandations pour un utilisateur
+curl -X POST http://localhost:8080/predict/ \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": 1, "n_recommendations": 10}'
+```
+
+### Monitoring
+
+```bash
+# Vérifier le data drift
+curl http://localhost:8080/monitoring/drift
+
+# Obtenir les statistiques
+curl http://localhost:8080/monitoring/stats
+
+# Rapport Evidently
+curl http://localhost:8080/monitoring/drift/evidently
+```
+
+### Données
+
+```bash
+# Statistiques de la base de données
+curl http://localhost:8080/stats
+
+# Générer des évaluations aléatoires
+curl -X POST "http://localhost:8080/generate-ratings/?batch_size=1000"
+```
+
+---
+
+## 🤖 Modèles de Machine Learning
+
+Le système entraîne et compare automatiquement 3 modèles :
+
+| Modèle | Description | Avantages |
+|--------|-------------|-----------|
+| **SVD** | Singular Value Decomposition | Haute précision, factorisation matricielle |
+| **KNNBasic** | K-Nearest Neighbors | Recommandations basées sur similarité |
+| **NormalPredictor** | Baseline aléatoire | Référence de comparaison |
+
+Le meilleur modèle est automatiquement sélectionné basé sur le **RMSE** (Root Mean Square Error) et enregistré dans MLflow.
+
+---
+
+## ✨ Fonctionnalités MLOps
+
+### 🆕 Cold Start
+Gestion automatique des nouveaux utilisateurs avec recommandations basées sur :
+- Films les plus populaires
+- Genres préférés (si disponibles)
+- Diversité des recommandations
+
+### 📈 Data Drift Detection
+- Détection automatique des changements dans les données
+- Comparaison avec une baseline de référence
+- Rapports Evidently détaillés
+- Alertes automatiques
+
+### 📊 Monitoring
+Suivi de la qualité des recommandations :
+- **Diversité** : Variété des genres recommandés
+- **Nouveauté** : Proportion de films récents
+- **Coverage** : Pourcentage du catalogue couvert
+- **Métriques Prometheus** : Latence, throughput, erreurs
+
+### 🔄 MLflow Integration
+- Tracking automatique de tous les entraînements
+- Comparaison des modèles (RMSE, MAE)
+- Registry de modèles avec versioning
+- Promotion automatique vers Production si amélioration
+- Stockage des artefacts dans MinIO (S3)
+
+### ⏰ Entraînement Planifié
+- DAG Airflow pour entraînement quotidien (2h du matin)
+- Vérification de santé de l'API avant exécution
+- Logs détaillés et gestion d'erreurs
+- Notifications en cas d'échec
+
+### 📉 Prometheus & Grafana
+- Métriques API : requêtes/sec, latence, erreurs
+- Métriques ML : RMSE, MAE, temps d'entraînement
+- Dashboards pré-configurés
+- Alerting personnalisable
+
+---
+
+## 🛠️ Développement Local
+
+Pour travailler sur le code sans Docker :
+
+### Linux/Mac
 ```bash
 chmod +x setup_venv.sh
 ./setup_venv.sh
 source venv/bin/activate
+pip install -r requirements.txt
 ```
 
-**Windows:**
+### Windows
 ```cmd
 setup_venv.bat
 venv\Scripts\activate
+pip install -r requirements.txt
 ```
 
-## Streamlit
-
-Interface utilisateur pour tester les recommandations.
-
+### Lancer Streamlit localement
 ```bash
-pip install -r requirements.txt
 streamlit run src/streamlit_app.py
 ```
 
-## Fonctionnalites
+---
 
-**Cold Start:** Gestion automatique des nouveaux utilisateurs avec recommandations basees sur films populaires et genres.
-
-**Data Drift:** Detection automatique des changements dans les donnees avec comparaison a une baseline.
-
-**Monitoring:** Suivi de la qualite des recommandations (diversite, nouveaute, coverage).
-
-**MLflow:** Comparaison automatique des modeles et promotion vers Production si meilleur.
-
-**Entrainement planifie:** Script cron dans Docker pour execution automatique quotidienne.
-
-**Prometheus/Grafana:** Monitoring des metriques API et ML.
-
-**Evidently:** Detection avancée de derive de donnees.
-
-## Tests
+## 🧪 Tests
 
 ```bash
+# Lancer tous les tests
 pytest tests/
+
+# Tests avec coverage
+pytest tests/ --cov=src --cov-report=html
+
+# Tests spécifiques
+pytest tests/test_api.py
+pytest tests/test_pipeline.py
 ```
 
-## Structure
+---
+
+## 📁 Structure du Projet
 
 ```
-├── docker/              # Dockerfiles
+jun25_bmle_mlops_reco_films/
+├── docker/                      # Dockerfiles et configurations
+│   ├── api/                     # Dockerfile API FastAPI
+│   ├── streamlit/               # Dockerfile Streamlit
+│   ├── mlflow/                  # Configuration MLflow
+│   ├── import_data/             # Scripts d'import
+│   ├── prometheus/              # Configuration Prometheus
+│   └── grafana/                 # Dashboards Grafana
 ├── src/
-│   ├── api/            # API FastAPI
-│   ├── data/           # Import et traitement
-│   ├── models/         # Entrainement et prediction
-│   └── pipeline/       # Pipeline DVC avec MLflow
-├── data/               # Donnees brutes
-├── models/             # Modeles entraines
-└── docker-compose.yml # Configuration services
+│   ├── api/                     # API FastAPI
+│   │   ├── endpoints/           # Routers (training, predict, monitoring, data)
+│   │   ├── app.py               # Application principale
+│   │   ├── cold_start.py        # Gestion cold start
+│   │   ├── data_drift.py        # Détection drift
+│   │   └── monitoring.py        # Métriques qualité
+│   ├── data/
+│   │   └── sql/                 # Scripts SQL et import
+│   ├── pipeline/                # Pipelines ML
+│   │   ├── train_model_pipeline.py
+│   │   ├── predict_model_pipeline.py
+│   │   ├── data_loader.py
+│   │   └── config.yaml
+│   ├── pages/                   # Pages Streamlit
+│   └── streamlit_app.py         # Application Streamlit
+├── dags/                        # DAGs Airflow
+│   └── training_dag.py
+├── data/                        # Données brutes (CSV)
+├── models/                      # Modèles entraînés
+├── predictions/                 # Prédictions sauvegardées
+├── metrics/                     # Métriques exportées
+├── tests/                       # Tests unitaires
+├── docs/                        # Documentation
+│   └── ARCHITECTURE.md          # Architecture détaillée
+├── docker-compose.yml           # Orchestration services
+├── requirements.txt             # Dépendances Python
+└── README.md                    # Ce fichier
 ```
+
+---
+
+## 🔧 Technologies Utilisées
+
+### Backend & API
+- **Python 3.11** : Langage principal
+- **FastAPI** : Framework API REST
+- **PostgreSQL 16** : Base de données
+- **SQLAlchemy** : ORM Python
+
+### Machine Learning
+- **scikit-surprise** : Modèles de recommandation (SVD, KNN)
+- **pandas** : Manipulation de données
+- **numpy** : Calculs numériques
+
+### MLOps & Tracking
+- **MLflow** : Tracking expériences et registry
+- **DVC** : Versioning données et modèles
+- **MinIO** : Stockage S3-compatible
+
+### Monitoring & Observabilité
+- **Prometheus** : Collecte de métriques
+- **Grafana** : Visualisation
+- **Evidently** : Data drift detection
+
+### Orchestration & UI
+- **Apache Airflow** : Orchestration pipelines
+- **Streamlit** : Interface utilisateur
+- **Docker & Docker Compose** : Containerisation
+
+---
+
+## 📖 Documentation Complémentaire
+
+- [Architecture détaillée](docs/ARCHITECTURE.md) : Flux de données, composants, diagrammes
+- [API Documentation](http://localhost:8080/docs) : Documentation interactive Swagger
+- [MLflow UI](http://localhost:5000) : Expériences et modèles
+- [Grafana Dashboards](http://localhost:3001) : Métriques et monitoring
+
+---
+
+## 🐛 Dépannage
+
+### Les conteneurs ne démarrent pas
+```bash
+# Vérifier les logs
+docker compose logs
+
+# Redémarrer proprement
+docker compose down -v
+docker compose up -d
+```
+
+### L'import de données est bloqué
+```bash
+# Vérifier les logs d'import
+docker logs -f jun25_bmle_mlops_reco_films-import_data-1
+
+# Relancer l'import
+docker compose restart import_data
+```
+
+### L'API ne répond pas
+```bash
+# Vérifier la santé de l'API
+curl http://localhost:8080/health
+
+# Vérifier les logs
+docker logs -f api
+```
+
+### Airflow ne démarre pas
+```bash
+# Vérifier que PostgreSQL est prêt
+docker logs db
+
+# Réinitialiser Airflow
+docker compose restart airflow-webserver airflow-scheduler
+```
+
+---
+
+## 📝 Licence
+
+Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+
+---
+
+## 👥 Contributeurs
+
+Projet MLOps - DataScientest - Promotion Juin 2025
+
+---
+
+## 📚 Dataset
+
+Ce projet utilise le dataset **MovieLens 20M** :
+- ~20 millions d'évaluations
+- ~27 000 films
+- ~138 000 utilisateurs
+- Période : 1995-2015
+
+Source : [GroupLens Research](https://grouplens.org/datasets/movielens/)
