@@ -33,6 +33,17 @@ with DAG(
         timeout=120,
     )
 
+    generate_new_data = SimpleHttpOperator(
+        task_id='generate_new_data',
+        http_conn_id='api_connection',
+        endpoint='/generate-ratings',
+        method='POST',
+        data=json.dumps({"batch_size": 100}),
+        headers={"Content-Type": "application/json"},
+        response_check=lambda response: response.status_code == 200,
+        log_response=True
+    )
+
     trigger_training = SimpleHttpOperator(
         task_id='trigger_training',
         http_conn_id='api_connection',
@@ -44,5 +55,5 @@ with DAG(
         log_response=True
     )
     
-    check_api_health >> trigger_training
+    check_api_health >> generate_new_data >> trigger_training
 

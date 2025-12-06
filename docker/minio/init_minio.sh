@@ -1,36 +1,36 @@
 #!/bin/sh
 set -e
 
-echo "ðŸš€ DÃ©marrage de MinIO avec initialisation automatique..."
+echo "Demarrage de MinIO avec initialisation automatique..."
 
-# Lancer MinIO en arriÃ¨re-plan
+# Lancer MinIO en arriere-plan
 minio server /data --console-address ":9001" &
 MINIO_PID=$!
 
-# Attendre que MinIO soit prÃªt
-echo "â³ Attente du service MinIO..."
+# Attendre que MinIO soit pret
+echo "Attente du service MinIO..."
 until curl -s http://localhost:9000/minio/health/ready >/dev/null; do
-  echo "MinIO pas encore prÃªt, attente 2s..."
+  echo "MinIO pas encore pret, attente 2s..."
   sleep 2
 done
-echo "âœ… MinIO est prÃªt"
+echo "MinIO est pret"
 
 # Configurer mc (client MinIO)
-echo "ðŸ”§ Configuration du client mc..."
+echo " Configuration du client mc..."
 mc alias set local http://localhost:9000 "${MINIO_ROOT_USER}" "${MINIO_ROOT_PASSWORD}" --api S3v4
 
-# CrÃ©er les buckets nÃ©cessaires
+# Creer les buckets necessaires
 for bucket in mlflow-artifacts dvc-storage; do
   if ! mc ls local/$bucket >/dev/null 2>&1; then
-    echo "ðŸª£ CrÃ©ation du bucket $bucket..."
+    echo "Creation du bucket $bucket..."
     mc mb local/$bucket
   else
-    echo "âœ… Bucket $bucket existe dÃ©jÃ "
+    echo "Bucket $bucket existe deja "
   fi
 done
 
-echo "âœ… Buckets prÃªts : mlflow-artifacts, dvc-storage"
-echo "ðŸš€ MinIO opÃ©rationnel"
+echo "Buckets prets : mlflow-artifacts, dvc-storage"
+echo "MinIO operationnel"
 
 # Garder MinIO actif
 wait $MINIO_PID

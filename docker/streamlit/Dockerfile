@@ -6,13 +6,14 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
+    graphviz \
     && rm -rf /var/lib/apt/lists/*
 
 # Install python dependencies
 COPY requirements.txt .
 # We only need a subset of requirements for streamlit, but installing all is easier for now
 # or we can manually install specific ones to keep image small
-RUN pip install streamlit requests pandas plotly
+RUN pip install streamlit requests pandas plotly graphviz
 
 COPY src/ /app/src/
 
