@@ -151,7 +151,64 @@ with st.expander("🟪 Couche Frontend (Interface Utilisateur)", expanded=True):
 st.markdown("---")
 
 # ============================================================================
-# 2. FLUX DE DONNÉES & MÉTRIQUES
+# 2. Schéma de la base de données
+# ============================================================================
+
+st.header("🔄 Schéma de la base de données")
+
+st.markdown("""
+**Contexte du jeu de données (ml-20m) :**
+
+Ce jeu de données décrit les activités **d’évaluation par étoiles** (sur 5) et **d’étiquetage libre** (tags) issues de **MovieLens**, un service de recommandation de films. Il contient :
+- **20 002 630 évaluations**
+- **465 564 applications de tags**
+- **27 278 films**
+- **138 493 utilisateurs**
+
+Ces données ont été générées entre le **9 janvier 1995** et le **31 mars 2015**. Le jeu de données a été créé le **31 mars 2015** et mis à jour le **17 octobre 2016** pour actualiser le fichier `links.csv` et ajouter les fichiers `genome-*`.
+
+**Sélection des utilisateurs :**
+- Les utilisateurs ont été sélectionnés **aléatoirement**.
+- Tous les utilisateurs sélectionnés avaient évalué **au moins 20 films**.
+- Aucune information démographique n’est incluse.
+- Chaque utilisateur est représenté par un **identifiant unique**.
+
+**Fichiers inclus :**
+Le jeu de données est réparti dans six fichiers :
+- `genome-scores.csv`
+- `genome-tags.csv`
+- `links.csv`
+- `movies.csv`
+- `ratings.csv`
+- `tags.csv`
+
+---
+""")
+
+st.markdown("""
+**Description des tables :**
+
+- **genres** : Stocke les genres de films (ex: Action, Comédie).
+- **movies** : Contient les informations de base sur les films (titre, année de sortie).
+- **movie_genres** : Table de liaison entre *movies* et *genres* (relation plusieurs-à-plusieurs).
+- **users** : Stocke les identifiants des utilisateurs.
+- **ratings** : Contient les évaluations des films par les utilisateurs.
+- **tags** : Stocke les tags uniques.
+- **movie_tags** : Table de liaison entre *users*, *movies* et *tags* (relation plusieurs-à-plusieurs).
+- **genome_tags** et **genome_scores** : Stockent les tags et scores de pertinence du "Tag Genome".
+- **links** : Contient les identifiants externes (IMDb, TMDb) pour chaque film.
+
+---
+""")
+
+st.image(
+    "src/pages/reco_films.png",
+    caption="Schéma ERD - Base de données reco_films",
+    use_container_width=True
+)
+
+# ============================================================================
+# 3. FLUX DE DONNÉES & MÉTRIQUES
 # ============================================================================
 
 st.header("🔄 Flux de Données & Métriques")
@@ -219,7 +276,7 @@ st.markdown("""
 st.markdown("---")
 
 # ============================================================================
-# 3. SCÉNARIOS D'UTILISATION
+# 4. SCÉNARIOS D'UTILISATION
 # ============================================================================
 
 st.header("📋 Scénarios d'Utilisation")
@@ -292,7 +349,7 @@ with tab3:
 st.markdown("---")
 
 # ============================================================================
-# 4. ANALYSE DU PROJET
+# 5. ANALYSE DU PROJET
 # ============================================================================
 
 st.header("📝 Analyse Détaillée")
@@ -320,7 +377,7 @@ with st.expander("✨ Pratiques MLOps Implémentées"):
 st.markdown("---")
 
 # ============================================================================
-# 5. PERSPECTIVES D'ÉVOLUTION
+# 6. PERSPECTIVES D'ÉVOLUTION
 # ============================================================================
 
 st.header("🔮 Perspectives d'Évolution Future")
