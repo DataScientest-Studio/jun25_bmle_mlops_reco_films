@@ -8,6 +8,7 @@ import pandas as pd
 import psycopg2
 from datetime import datetime
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import JSONResponse
 from api.schemas import HealthResponse
 from pipeline.config import load_config
 from typing import Optional
@@ -31,102 +32,93 @@ def get_db_connection():
 
 @router.post("/generate-ratings")
 async def generate_random_ratings(
-    batch_size: int = 100
+    batch_size: int = 10000
 ):
     """
     Génère des votes (ratings) aléatoires dans la base de données.
     
     Compatible avec l'API du collègue : POST /generate-ratings/?batch_size=30000
     
-    - **batch_size**: Nombre de votes à générer (défaut: 100)
+    - **batch_size**: Nombre de votes à générer (défaut: 10000)
     """
     return await generate_random_ratings_internal(count=batch_size)
 
 
 @router.post("/generate/ratings")
 async def generate_random_ratings_alt(
-    count: int = 100,
-    user_id: Optional[int] = None
+    count: int = 10000
 ):
     """
     Génère des votes (ratings) aléatoires dans la base de données.
     
-    - **count**: Nombre de votes à générer (défaut: 100)
-    - **user_id**: ID utilisateur spécifique (optionnel, sinon aléatoire)
+    - **count**: Nombre de votes à générer (défaut: 10000)
     """
-    return await generate_random_ratings_internal(count=count, user_id=user_id)
+    return await generate_random_ratings_internal(count=count)
 
 
 async def generate_random_ratings_internal(
-    count: int = 100,
-    user_id: Optional[int] = None
+    count: int = 10000
 ):
     """
     Génère des votes (ratings) aléatoires dans la base de données.
     
-    - **count**: Nombre de votes à générer (défaut: 100)
-    - **user_id**: ID utilisateur spécifique (optionnel, sinon aléatoire)
+    - **count**: Nombre de votes à générer (défaut: 10000)
     """
+    conn = None
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-        
-        # Récupérer les IDs disponibles
-        cursor.execute("SELECT user_id FROM users ORDER BY user_id")
-        user_ids = [row[0] for row in cursor.fetchall()]
-        
-        cursor.execute("SELECT movie_id FROM movies ORDER BY movie_id")
-        movie_ids = [row[0] for row in cursor.fetchall()]
-        
-        if not user_ids or not movie_ids:
-            raise HTTPException(
-                status_code=404,
-                detail="Aucun utilisateur ou film trouvé dans la base de données"
-            )
-        
-        # Générer les votes aléatoires
-        generated = 0
-        timestamp = int(datetime.now().timestamp())
-        
-        for _ in range(count):
-            # Utiliser user_id fourni ou choisir aléatoirement
-            selected_user_id = user_id if user_id is not None else random.choice(user_ids)
-            selected_movie_id = random.choice(movie_ids)
-            rating = round(random.uniform(0.5, 5.0), 1)  # Rating entre 0.5 et 5.0
-            
-            try:
-                cursor.execute(
-                    """
-                    INSERT INTO ratings (user_id, movie_id, rating, timestamp)
-                    VALUES (%s, %s, %s, %s)
-                    ON CONFLICT (user_id, movie_id) DO UPDATE
-                    SET rating = EXCLUDED.rating, timestamp = EXCLUDED.timestamp
-                    """,
-                    (selected_user_id, selected_movie_id, rating, timestamp)
-                )
-                generated += 1
-            except Exception as e:
-                logger.warning(f"Erreur lors de l'insertion: {e}")
-                continue
-        
-        conn.commit()
-        cursor.close()
-        conn.close()
-        
-        return {
-            "status": "success",
-            "message": f"{generated} votes générés avec succès",
-            "count": generated,
-            "user_id": selected_user_id if user_id else "aléatoire"
-        }
-        
-    except Exception as e:
-        logger.error(f"Erreur lors de la génération de votes: {e}", exc_info=True)
-        raise HTTPException(
-            status_code=500,
-            detail=f"Erreur lors de la génération de votes: {str(e)}"
-        )
 
+        query = """
+        INSERT INTO ratings (user_id, movie_id, rating, timestamp)
+        SELECT
+            u.user_id,
+            m.movie_id,
+            (FLOOR(RANDOM() * 10) + 1) * 0.5,
+            EXTRACT(EPOCH FROM NOW()) * 1000
+        FROM
+            (SELECT user_id FROM users ORDER BY RANDOM() LIMIT 500) u
+        CROSS JOIN
+            (SELECT movie_id FROM movies ORDER BY RANDOM() LIMIT 500) m
+        LEFT JOIN
+            ratings r ON u.user_id = r.user_id AND m.movie_id = r.movie_id
+        WHERE
+            r.user_id IS NULL
+            AND u.user_id IS NOT NULL
+            AND m.movie_id IS NOT NULL
+        LIMIT %s;
+        """
+
+        cursor.execute(query, (count,))
+        conn.commit()
+
+        message = f"Inserted {count} new ratings."
+        logger.info(message)
+
+        return JSONResponse(content={
+            "status": "success", 
+            "inserted": count,
+            "message": message 
+        })  
+
+        for table in ["ratings", "users", "movies"]:
+            cursor.execute(f"ANALYZE {table};")
+            conn.commit()
+            logger.info(f"Analyzed table: {table}")
+
+        return JSONResponse(content={"status": "success", "tables_analyzed": ["ratings", "users", "movies"]})
+
+    except Exception as e:
+        logger.error(f"Error generating ratings: {e}")
+        if conn:
+            conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+    finally:
+        if conn:
+            conn.close()
+
+    
 
 @router.get("/get-random-ratings")
 async def get_random_ratings(

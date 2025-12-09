@@ -36,9 +36,8 @@ with DAG(
     generate_new_data = SimpleHttpOperator(
         task_id='generate_new_data',
         http_conn_id='api_connection',
-        endpoint='/generate-ratings',
+        endpoint='/generate-ratings?batch_size=20000', 
         method='POST',
-        data=json.dumps({"batch_size": 100}),
         headers={"Content-Type": "application/json"},
         response_check=lambda response: response.status_code == 200,
         log_response=True
