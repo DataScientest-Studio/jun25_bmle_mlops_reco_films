@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import plotly.express as px
 from api_utils import api_request
@@ -7,9 +8,14 @@ st.set_page_config(page_title="Monitoring - Recommandation de Films", layout="wi
 
 st.title("Monitoring & Observabilité")
 
-tab1, tab2 = st.tabs(["Qualité des Recommandations", "Data Drift"])
+tab1, tab2, tab3 = st.tabs(["Dashboard Grafana", "Qualité des Recommandations", "Data Drift"])
 
 with tab1:
+    st.header("Dashboard Grafana")
+    grafana_url = "http://localhost:3001/d/69030c37-8da9-4eef-b248-ff47fc912e4a/api-metrics-dashboard?orgId=1&from=now-6h&to=now&timezone=browser&refresh=10s&kiosk"
+    components.iframe(src=grafana_url, height=600, scrolling=True)
+
+with tab2:
     st.header("Qualité des Recommandations")
     days = st.slider("Période d'analyse (jours)", 1, 30, 7)
     
@@ -32,7 +38,7 @@ with tab1:
                     fig = px.pie(df_methods, values="Nombre", names="Méthode", title="Répartition des méthodes de recommandation")
                     st.plotly_chart(fig, use_container_width=True)
 
-with tab2:
+with tab3:
     st.header("Détection de Data Drift")
     st.markdown("Compare les statistiques actuelles des données avec la baseline (référence).")
     
