@@ -45,4 +45,47 @@ with col3:
     st.caption("PostgreSQL")
 
 st.markdown("---")
+
+st.subheader("🔗 Accès aux Services")
+
+st.markdown("""
+Accédez directement aux différents modules et interfaces du système :
+""")
+
+# API Endpoints
+col_api1, col_api2 = st.columns(2)
+
+with col_api1:
+    st.markdown("#### 📡 API REST")
+    st.markdown(f"""
+    - [📚 Documentation API (Swagger)](http://localhost:8080/docs)
+    - [❤️ Health Check](http://localhost:8080/health)
+    - [📊 Métriques Prometheus](http://localhost:8080/metrics)
+    """)
+
+with col_api2:
+    st.markdown("#### 🛠️ Outils MLOps")
+    st.markdown(f"""
+    - [🧪 MLflow Tracking](http://localhost:5000)
+    - [📅 Apache Airflow](http://localhost:8081)
+    - [📊 Grafana Dashboards](http://localhost:3001)
+    - [🔍 Prometheus](http://localhost:9090)
+    """)
+
+# Database & Storage
+col_db1, col_db2 = st.columns(2)
+
+with col_db1:
+    st.markdown("#### 💾 Base de Données")
+    st.markdown(f"""
+    - [🐘 pgAdmin](http://localhost:5050)
+    """)
+
+with col_db2:
+    st.markdown("#### 📦 Stockage")
+    st.markdown(f"""
+    - [🗄️ MinIO Console](http://localhost:9001)
+    """)
+
+st.markdown("---")
 st.caption("Projet MLOps - Recommandation de Films - 2025")

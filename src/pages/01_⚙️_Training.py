@@ -184,8 +184,53 @@ with col2:
                 st.rerun()
             elif status == "completed":
                 st.success(f"Dernier entraînement : {data.get('message')}")
+                
                 if data.get("metrics"):
-                    st.json(data["metrics"])
+                    st.subheader("Résultats de l'entraînement")
+                    
+                    # Extraire les métriques RMSE
+                    metrics = data["metrics"]
+                    svd_rmse = metrics.get("svd_rmse")
+                    knn_rmse = metrics.get("knn_rmse")
+                    dummy_rmse = metrics.get("dummy_rmse")
+                    best_rmse = metrics.get("best_rmse")
+                    
+                    # Affichage en colonnes
+                    col_svd, col_knn, col_dummy = st.columns(3)
+                    
+                    with col_svd:
+                        st.metric(
+                            "SVD", 
+                            f"{svd_rmse:.4f}" if svd_rmse else "N/A",
+                            delta=f"{svd_rmse - best_rmse:.4f}" if (svd_rmse and best_rmse) else None,
+                            delta_color="inverse"
+                        )
+                        if svd_rmse == best_rmse:
+                            st.success("Meilleur modèle")
+                    
+                    with col_knn:
+                        st.metric(
+                            "KNN", 
+                            f"{knn_rmse:.4f}" if knn_rmse else "N/A",
+                            delta=f"{knn_rmse - best_rmse:.4f}" if (knn_rmse and best_rmse) else None,
+                            delta_color="inverse"
+                        )
+                        if knn_rmse == best_rmse:
+                            st.success("Meilleur modèle")
+                    
+                    with col_dummy:
+                        st.metric(
+                            "Baseline", 
+                            f"{dummy_rmse:.4f}" if dummy_rmse else "N/A",
+                            delta=f"{dummy_rmse - best_rmse:.4f}" if (dummy_rmse and best_rmse) else None,
+                            delta_color="inverse"
+                        )
+                        if dummy_rmse == best_rmse:
+                            st.success("Meilleur modèle")
+                    
+                    with st.expander("Voir toutes les métriques"):
+                        st.json(metrics)
+                        
             elif status == "error":
                 st.error(f"Dernier entraînement échoué : {data.get('message')}")
             else:

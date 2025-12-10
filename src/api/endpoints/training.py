@@ -122,8 +122,44 @@ async def get_training_status():
             metrics=metrics
         )
     else:
+        # Essayer de récupérer le dernier run depuis MLflow
+        try:
+            config = load_config()
+            mlflow.set_tracking_uri(config["mlflow"]["tracking_uri"])
+            mlflow.set_experiment(config["mlflow"]["experiment_name"])
+            
+            runs = mlflow.search_runs(
+                order_by=["start_time desc"],
+                max_results=1,
+                filter_string="tags.mlflow.runName != 'Prediction_User_%'"
+            )
+            
+            if not runs.empty:
+                last_run_id = runs.iloc[0]["run_id"]
+                metrics = runs.iloc[0].to_dict()
+                
+                # Extraire uniquement les métriques pertinentes
+                relevant_metrics = {
+                    "svd_rmse": metrics.get("metrics.svd_rmse"),
+                    "knn_rmse": metrics.get("metrics.knn_rmse"),
+                    "dummy_rmse": metrics.get("metrics.dummy_rmse"),
+                    "best_rmse": metrics.get("metrics.best_rmse")
+                }
+                
+                # Filtrer les None
+                relevant_metrics = {k: v for k, v in relevant_metrics.items() if v is not None}
+                
+                return TrainingResponse(
+                    status="completed",
+                    message="Dernier entraînement récupéré depuis MLflow",
+                    run_id=last_run_id,
+                    metrics=relevant_metrics
+                )
+        except Exception as e:
+            logger.warning(f"Impossible de récupérer le dernier run depuis MLflow: {e}")
+        
         return TrainingResponse(
             status="idle",
-            message="Aucun entraînement n'a été effectué"
+            message="Aucun entraînement trouvé"
         )
 

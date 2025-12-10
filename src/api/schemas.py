@@ -70,3 +70,24 @@ class MonitoringResponse(BaseModel):
     avg_score: float = Field(description="Score moyen des recommandations")
     methods_used: Dict[str, int] = Field(description="Méthodes utilisées et leur fréquence")
 
+
+class BatchPredictionRequest(BaseModel):
+    """Schéma pour la requête de prédiction batch"""
+    user_ids: List[int] = Field(
+        description="Liste des IDs utilisateurs pour les prédictions batch"
+    )
+    top_n: int = Field(
+        default=5,
+        ge=1,
+        le=50,
+        description="Nombre de recommandations par utilisateur (1-50)"
+    )
+
+
+class BatchPredictionResponse(BaseModel):
+    """Schéma pour la réponse de prédiction batch"""
+    status: str = Field(description="Statut de l'exécution")
+    message: str = Field(description="Message descriptif")
+    users_processed: int = Field(description="Nombre d'utilisateurs traités")
+    predictions_dir: str = Field(description="Chemin du dossier des prédictions")
+    mlflow_run_id: Optional[str] = Field(default=None, description="ID du run MLflow")

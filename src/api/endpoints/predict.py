@@ -4,11 +4,11 @@ import pandas as pd
 import joblib
 import psycopg2
 from functools import lru_cache
-from fastapi import APIRouter, HTTPException
-from api.schemas import PredictionRequest, PredictionResponse, MovieRecommendation
+from fastapi import APIRouter, HTTPException, BackgroundTasks
+from api.schemas import PredictionRequest, PredictionResponse, MovieRecommendation, BatchPredictionRequest, BatchPredictionResponse
 from pipeline.config import load_config
 from surprise import Dataset, Reader
-from pipeline.predict_model_pipeline import top_n_user
+from pipeline.predict_model_pipeline import top_n_user, predict_model_mlflow
 from api.cold_start import is_new_user, get_cold_start_recommendations
 from api.monitoring import log_recommendation, compute_recommendation_metrics
 from api.prometheus_metrics import recommendations_total
@@ -123,6 +123,35 @@ async def get_recommendations(request: PredictionRequest):
         except Exception as e:
             logger.warning(f"Erreur lors du logging de la recommandation: {e}")
         
+        # Sauvegarder automatiquement en CSV + MLflow
+        try:
+            import mlflow
+            import os
+            
+            # Créer le dossier predictions si nécessaire
+            os.makedirs("predictions", exist_ok=True)
+            
+            # Sauvegarder en CSV
+            results_df = pd.DataFrame(top_n, columns=['movie', 'score'])
+            csv_path = f"./predictions/top_{request.top_n}_user_{request.user_id}.csv"
+            results_df.to_csv(csv_path, index=False)
+            
+            # Logger dans MLflow
+            config = load_config()
+            mlflow.set_tracking_uri(config["mlflow"]["tracking_uri"])
+            mlflow.set_experiment(config["mlflow"]["experiment_name"])
+            
+            with mlflow.start_run(run_name=f"Prediction_User_{request.user_id}"):
+                mlflow.log_param("user_id", request.user_id)
+                mlflow.log_param("top_n", request.top_n)
+                mlflow.log_param("method", method)
+                mlflow.log_metric("top_score", top_score if top_score else 0.0)
+                mlflow.log_artifact(csv_path)
+            
+            logger.info(f"Prédictions sauvegardées: {csv_path}")
+        except Exception as e:
+            logger.warning(f"Erreur lors de la sauvegarde MLflow: {e}")
+        
         return PredictionResponse(
             user_id=request.user_id,
             recommendations=recommendations,
@@ -167,3 +196,50 @@ async def predict_health():
             "error": str(e)
         }
 
+
+@router.post("/batch", response_model=BatchPredictionResponse)
+async def run_batch_predictions(request: BatchPredictionRequest):
+    """
+    Exécute des prédictions batch pour plusieurs utilisateurs.
+    
+    Sauvegarde les résultats en CSV dans le dossier predictions/
+    et log les artefacts dans MLflow.
+    """
+    try:
+        import mlflow
+        
+        # Exécuter le pipeline de prédiction batch
+        predict_model_mlflow(users_id=request.user_ids, N=request.top_n)
+        
+        # Récupérer le run_id de la dernière exécution
+        client = mlflow.tracking.MlflowClient()
+        experiment = client.get_experiment_by_name(load_config()["mlflow"]["experiment_name"])
+        if experiment:
+            runs = client.search_runs(
+                experiment_ids=[experiment.experiment_id],
+                order_by=["start_time DESC"],
+                max_results=1
+            )
+            run_id = runs[0].info.run_id if runs else None
+        else:
+            run_id = None
+        
+        return BatchPredictionResponse(
+            status="success",
+            message=f"Prédictions batch générées pour {len(request.user_ids)} utilisateurs",
+            users_processed=len(request.user_ids),
+            predictions_dir="./predictions",
+            mlflow_run_id=run_id
+        )
+        
+    except FileNotFoundError as e:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Modèle non trouvé: {str(e)}. Veuillez d'abord entraîner le modèle."
+        )
+    except Exception as e:
+        logger.error(f"Erreur lors de la prédiction batch: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erreur lors de la génération des prédictions batch: {str(e)}"
+        )

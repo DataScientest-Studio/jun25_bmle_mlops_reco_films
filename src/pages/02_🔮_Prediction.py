@@ -32,6 +32,7 @@ with col1:
         else:
             st.session_state['last_recommendations'] = data.get("recommendations", [])
             st.success("Recommandations générées avec succès")
+            st.info("💾 Prédictions automatiquement sauvegardées dans MLflow")
 
 with col2:
     st.subheader("Films Recommandés")
